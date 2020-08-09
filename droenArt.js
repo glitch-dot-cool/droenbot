@@ -1,4 +1,4 @@
-module.exports.droenArt = ` 
+module.exports = ` 
  ,x-\"F   ]    Ax^\" q    hp\"  \`u jM\"\"u  a^ ^, j\"  \"*g_   p  ^mg_   [  F\"-x,\n\
     jLs*^6   \`_  _&*\"  q  _,NF   \"wp\"  \"*g\"   _NL_  p  \"-d_   F   ]\"*u_F\n\
     ]   J_,x-E   3_  jN^\" \`u _w^*_  _RR_  _J^w_ j\"  \"pL_  f   7^-L_F   #\n\
