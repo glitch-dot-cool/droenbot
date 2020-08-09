@@ -1,5 +1,5 @@
 exports.run = (bot, message, args) => {
-  const [lennyID] = args;
+  const lennyID = Number(args[0]);
 
   const lennies = [
     "( ͡° ͜ʖ ͡°)",
@@ -35,7 +35,7 @@ exports.run = (bot, message, args) => {
     if (value < min) {
       value = min;
     } else if (value > max) {
-      value = max;
+      value = max - 1;
     }
     return value;
   }
