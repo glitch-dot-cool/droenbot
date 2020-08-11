@@ -18,7 +18,7 @@ exports.run = async (bot, message, args) => {
   const icon = current.weather_icons[0];
   const condition = current.weather_descriptions[0];
   const temp = current.temperature;
-  const { wind_speed, humidity, cloudcover } = current;
+  const { wind_speed, humidity, cloudcover, precip } = current;
 
   const embed = new Discord.MessageEmbed()
     .setTitle(
@@ -26,7 +26,9 @@ exports.run = async (bot, message, args) => {
     )
     .setImage(icon)
     .addFields(
-      { name: "wind speed", value: wind_speed },
+      { name: "temperature", value: `${temp}c` },
+      { name: "precipitation", value: `${precip}mm` },
+      { name: "wind speed", value: `${wind_speed}kph` },
       { name: "humidity", value: `${humidity}%` },
       { name: "cloud cover", value: `${cloudcover}%` }
     )
