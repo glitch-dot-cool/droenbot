@@ -50,7 +50,6 @@ function update_score(bot, message) {
     }
 
     score.points++;
-    console.log(score);
 
     const current_level = Math.floor(0.1 * Math.sqrt(score.points));
 
@@ -64,4 +63,8 @@ function update_score(bot, message) {
   }
 }
 
-module.exports = { setup_db, update_score };
+function get_stats(bot, message) {
+  return bot.getScore.get(message.author.id, message.guild.id);
+}
+
+module.exports = { setup_db, get_stats, update_score };
