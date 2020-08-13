@@ -63,8 +63,8 @@ function update_score(bot, message) {
   }
 }
 
-function get_stats(bot, message) {
-  return bot.getScore.get(message.author.id, message.guild.id);
+function get_stats(bot, author_id, guild_id) {
+  return bot.getScore.get(author_id, guild_id);
 }
 
 module.exports = { setup_db, get_stats, update_score };
