@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 const colors = require("colors");
 const config = require("./config.json");
 const ascii = require("./droenArt.js");
-const { setup_db, update_score } = require("./db.js");
+const { update_user_message_count } = require("./db/user-model");
 
 const bot = new Discord.Client();
 
@@ -11,7 +11,6 @@ bot.login(config.token);
 bot.on("ready", () => {
   console.log(ascii.cyan);
   bot.user.setActivity("with my code");
-  setup_db(bot);
 });
 
 bot.on("debug", (err) => console.info(err.grey));
@@ -24,7 +23,7 @@ bot.on("message", (message) => {
     return;
   }
 
-  update_score(bot, message);
+  update_user_message_count(message.author.id, message);
 
   command_handler(message);
 });
