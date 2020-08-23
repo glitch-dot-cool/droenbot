@@ -1,7 +1,8 @@
 const Discord = require("discord.js");
-const { get_stats } = require("../db");
+const { get_user_message_count } = require("../db/user-model");
 
-exports.run = (bot, message, args) => {
+exports.run = async (bot, message, args) => {
+  const msg_count = await get_user_message_count(message.author.id);
   const author_id = message.author.id;
   const guild_id = message.guild.id;
   const joined_at = new Date(message.member.joinedAt);
@@ -13,15 +14,12 @@ exports.run = (bot, message, args) => {
     .members.resolve(author_id)
     .user.avatarURL();
 
-  const stats = get_stats(bot, author_id, guild_id);
-
   const embed = new Discord.MessageEmbed()
     .setTitle(`Stats for ${message.member.displayName}`)
     .addFields(
       { name: "joined:", value: joined_at.toLocaleString() },
-      { name: "messages sent:", value: stats.points },
-      { name: "last message:", value: last_msg.toLocaleString() },
-      { name: "level:", value: stats.level }
+      { name: "messages sent:", value: msg_count },
+      { name: "last message:", value: last_msg.toLocaleString() }
     )
     .setImage(avatar)
     .setColor(color);
