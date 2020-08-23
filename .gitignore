@@ -1,7 +1,7 @@
 # Droenbot creds & data
 config.json
 data/*
-*.sqlite*
+*.db3
 
 # Logs
 logs
