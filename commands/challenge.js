@@ -11,6 +11,10 @@ exports.run = async (bot, message, args) => {
       case "add":
         add(args, message);
         break;
+      case "remove":
+      case "delete":
+        remove(args, message);
+        break;
       default:
         warn_invalid_command(message);
     }
@@ -32,7 +36,28 @@ async function add(arguments, message) {
     message.reply("Successfully added challenge");
   } catch (error) {
     message.reply(
-      `Error adding challenge. Please try again and double check your input syntax. Properly formatted inputs should contain a command (add, edit, etc), a name, an optional description, and a due date (MM/DD/YYYY).\nEx:\n${input_syntax_example}`
+      `Error adding challenge. Please try again and double check your input syntax. Properly formatted inputs should contain a command (add), a name, an optional description, and a due date (MM/DD/YYYY).\nEx:\n${input_syntax_example}`
+    );
+    console.error(error);
+  }
+}
+
+async function remove(arguments, message) {
+  const input_syntax_example = `\`!challenge delete make a track slower than 60bpm\``;
+  const args = parse_arguments(arguments);
+
+  try {
+    const id = await db.remove("challenges", { challenge_name: args.name });
+    if (id) {
+      message.reply("Successfully deleted challenge");
+    } else {
+      message.reply(
+        "The challenge you are trying to delete doesn't exist. \nTry calling `!challenge list`"
+      );
+    }
+  } catch (error) {
+    message.reply(
+      `Error deleting challenge. Please try again and double check your input syntax. Properly formatted inputs should contain a command (remove) and the name of the challenge you're trying to delete.\nEx:\n${input_syntax_example}`
     );
     console.error(error);
   }
