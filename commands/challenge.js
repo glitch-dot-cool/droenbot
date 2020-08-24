@@ -1,4 +1,5 @@
 const db = require("../db/db-model");
+const Discord = require("discord.js");
 
 exports.run = async (bot, message, args) => {
   const command = args[0].toLowerCase();
@@ -14,6 +15,10 @@ exports.run = async (bot, message, args) => {
       case "remove":
       case "delete":
         remove(args, message);
+        break;
+      case "list":
+      case "view":
+        list(message);
         break;
       default:
         warn_invalid_command(message);
@@ -59,6 +64,25 @@ async function remove(arguments, message) {
     message.reply(
       `Error deleting challenge. Please try again and double check your input syntax. Properly formatted inputs should contain a command (remove) and the name of the challenge you're trying to delete.\nEx:\n${input_syntax_example}`
     );
+    console.error(error);
+  }
+}
+
+async function list(message) {
+  try {
+    const challenges = await db.find("challenges");
+    const embed = new Discord.MessageEmbed()
+      .setTitle("List of Challenges:")
+      .addFields(
+        challenges.map((challenge) => {
+          return {
+            name: challenge.challenge_name,
+            value: challenge.challenge_description,
+          };
+        })
+      );
+    message.channel.send(embed);
+  } catch (error) {
     console.error(error);
   }
 }
