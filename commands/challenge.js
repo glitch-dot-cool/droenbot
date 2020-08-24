@@ -20,6 +20,10 @@ exports.run = async (bot, message, args) => {
       case "view":
         list(message);
         break;
+      case "select":
+      case "draw":
+        select(args, message);
+        break;
       default:
         warn_invalid_command(message);
     }
@@ -29,19 +33,21 @@ exports.run = async (bot, message, args) => {
 };
 
 async function add(arguments, message) {
-  const input_syntax_example = `\`!challenge add make a track slower than 60bpm\nno double time!\n01/30/20\``;
+  const input_syntax_example = `\`!challenge add make a track underwater\nscuba is prohibited but snorkles are permitted\``;
   const args = parse_arguments(arguments);
 
   try {
-    await db.insert("challenges", {
-      challenge_name: args.name,
-      challenge_description: args.description || args.name,
-      due_by: new Date(args.due_by),
-    });
-    message.reply("Successfully added challenge");
+    if (args.name && args.name !== " ") {
+      await db.insert("challenges", {
+        challenge_name: args.name,
+        challenge_description: args.description || "N/A",
+        due_by: "N/A",
+      });
+      message.reply("Successfully added challenge");
+    } else throw "Challenge must have a name!";
   } catch (error) {
     message.reply(
-      `Error adding challenge. Please try again and double check your input syntax. Properly formatted inputs should contain a command (add), a name, an optional description, and a due date (MM/DD/YYYY).\nEx:\n${input_syntax_example}`
+      `Error adding challenge. Please try again and double check your input syntax. Properly formatted inputs should contain a command (add), a name, and an optional description.\nEx:\n${input_syntax_example}`
     );
     console.error(error);
   }
@@ -87,13 +93,56 @@ async function list(message) {
   }
 }
 
+async function select(arguments, message) {
+  try {
+    // pull random challenge
+    const challenges = await db.find("challenges");
+    const random_index = Math.floor(Math.random() * challenges.length);
+    const selected_challenge = challenges[random_index];
+
+    // setup due date
+    const now = new Date();
+    const due_by =
+      now.getMonth() == 11
+        ? new Date(now.getFullYear() + 1, 0, 1)
+        : new Date(now.getFullYear(), now.getMonth() + 1, 1);
+
+    // update due date in db
+    await db.update(
+      "challenges",
+      {
+        due_by,
+      },
+      { id: selected_challenge.id }
+    );
+
+    // setup result embed
+    const embed = new Discord.MessageEmbed()
+      .setTitle("This month's challenge is:")
+      .addField(
+        selected_challenge.challenge_name,
+        selected_challenge.challenge_description
+      )
+      .setFooter(
+        `Due date: ${new Date(selected_challenge.due_by)
+          .toISOString()
+          .substring(0, 10)}`
+      );
+
+    message.channel.send(embed);
+  } catch (error) {
+    console.error(error);
+    message.channel.send("Error selecting challenge");
+  }
+}
+
 function warn_invalid_command(message) {
   message.reply(
-    "Invalid command. Valid commands are `add`, `update`, `delete`, `draw`, and `list`"
+    "Invalid command. Valid commands are `add`, `update`, `delete`, `select`, and `list`"
   );
 }
 
 function parse_arguments(args) {
-  const [name, due_by, description] = args.slice(1).join(" ").split("\n");
-  return { name, due_by, description };
+  const [name, description] = args.slice(1).join(" ").split("\n");
+  return { name, description };
 }
