@@ -1,11 +1,11 @@
-const db = require('./db-config.js');
+const db = require("./db-config.js");
 
 function find(table) {
   return db(table);
 }
 
 function findBy(table, filter) {
-  return db(table).where(filter).first();
+  return db(table).where(filter);
 }
 
 async function insert(table, data) {
@@ -18,8 +18,9 @@ function remove(table, filter) {
   return db(table).where(filter).delete();
 }
 
-function update(table, data, filter) {
-  return db(table).where(filter).update(data);
+async function update(table, data, filter) {
+  await db(table).where(filter).update(data);
+  return await db(table).where(filter);
 }
 
 function closeConnection() {

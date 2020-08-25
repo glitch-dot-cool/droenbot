@@ -12,7 +12,7 @@ const get_user_message_count = async (discord_id) => {
 const update_user_message_count = async (discord_id, message) => {
   // prevent points from accruing via DMs to bot
   if (message.guild) {
-    const user = await db.findBy("users", { discord_id });
+    const [user] = await db.findBy("users", { discord_id });
     // if no entry for user, create one
     if (!user) {
       const userData = {
