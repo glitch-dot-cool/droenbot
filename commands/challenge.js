@@ -22,7 +22,7 @@ exports.run = async (bot, message, args) => {
         break;
       case "select":
       case "draw":
-        select(args, message);
+        select(message);
         break;
       default:
         warn_invalid_command(message);
@@ -76,7 +76,7 @@ async function remove(arguments, message) {
 
 async function list(message) {
   try {
-    const challenges = await db.find("challenges");
+    const challenges = await db.findBy("challenges", { due_by: "N/A" });
     const embed = new Discord.MessageEmbed()
       .setTitle("List of Challenges:")
       .addFields(
@@ -93,10 +93,10 @@ async function list(message) {
   }
 }
 
-async function select(arguments, message) {
+async function select(message) {
   try {
     // pull random challenge
-    const challenges = await db.find("challenges");
+    const challenges = await db.findBy("challenges", { due_by: "N/A" });
     const random_index = Math.floor(Math.random() * challenges.length);
     const selected_challenge = challenges[random_index];
 
@@ -124,9 +124,7 @@ async function select(arguments, message) {
         selected_challenge.challenge_description
       )
       .setFooter(
-        `Due date: ${new Date(selected_challenge.due_by)
-          .toISOString()
-          .substring(0, 10)}`
+        `Due date: ${new Date(due_by).toISOString().substring(0, 10)}`
       );
 
     message.channel.send(embed);
