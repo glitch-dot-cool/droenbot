@@ -8,10 +8,10 @@ module.exports = {
       filename: path.resolve(__dirname, "./data/droenbot_dev.db3"),
     },
     migrations: {
-      directory: "./data/migrations",
+      directory: path.resolve(__dirname, "./data/migrations"),
     },
     seeds: {
-      directory: "./data/seeds",
+      directory: path.resolve(__dirname, "./data/seeds"),
     },
     pool: {
       afterCreate: (conn, done) => {
@@ -26,10 +26,10 @@ module.exports = {
       filename: path.resolve(__dirname, "./data/droenbot.db3"),
     },
     migrations: {
-      directory: "./data/migrations",
+      directory: path.resolve(__dirname, "./data/migrations"),
     },
     seeds: {
-      directory: "./data/seeds",
+      directory: path.resolve(__dirname, "./data/seeds"),
     },
     pool: {
       afterCreate: (conn, done) => {
