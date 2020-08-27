@@ -13,10 +13,7 @@ const update_user_message_count = async (discord_id, message) => {
   // prevent points from accruing via DMs to bot
   if (message.guild) {
     const message_type = check_message_type(message);
-    const [user] = await db.findBy("users", { discord_id });
-    const user_message_details = await db.findBy("message_details", {
-      user_fk: user.id,
-    });
+    let [user] = await db.findBy("users", { discord_id });
 
     // if no entry for user, create one
     if (!user) {
@@ -28,7 +25,7 @@ const update_user_message_count = async (discord_id, message) => {
         level: 1,
       };
 
-      await db.insert("users", userData);
+      [user] = await db.insert("users", userData);
     } else {
       await db.update(
         "users",
@@ -36,6 +33,10 @@ const update_user_message_count = async (discord_id, message) => {
         { id: user.id }
       );
     }
+
+    const user_message_details = await db.findBy("message_details", {
+      user_fk: user.id,
+    });
 
     const channel_message_details = user_message_details.filter(
       (channel) => channel.channel_id === Number(message.channel.id)
