@@ -12,7 +12,10 @@ const get_user_message_count = async (discord_id) => {
 const update_user_message_count = async (discord_id, message) => {
   // prevent points from accruing via DMs to bot
   if (message.guild) {
+    const message_type = check_message_type(message);
     const [user] = await db.findBy("users", { discord_id });
+    const [user_message_details] = await db.findBy("message_details", {});
+
     // if no entry for user, create one
     if (!user) {
       const userData = {
@@ -31,8 +34,116 @@ const update_user_message_count = async (discord_id, message) => {
         { id: user.id }
       );
     }
+
+    // if no user_message_details, initialize it
+    if (!user_message_details) {
+      const messageData = {
+        user_fk: user.id,
+        channel_id: message.channel.id,
+        channel_name: message.channel.name,
+        total_count: 1,
+        image_count: message_type.image,
+        audio_count: message_type.audio,
+        video_count: message_type.video,
+        code_count: message_type.code,
+      };
+
+      await db.insert("message_details", messageData);
+    } else {
+      await db.update(
+        "message_details",
+        {
+          total_count: user_message_details.total_count + 1,
+          image_count: user_message_details.image_count + message_type.image,
+          audio_count: user_message_details.audio_count + message_type.audio,
+          video_count: user_message_details.video_count + message_type.video,
+          code_count: user_message_details.code_count + message_type.code,
+        },
+        { id: user.id }
+      );
+    }
   }
 };
+
+function check_message_type(message) {
+  const audio_formats = ["wav", "mp3", "flac", "aiff", "ogg"];
+  const video_formats = ["mp4", "mov", "webm", "mkv", "gifv", "avi", "wmv"];
+  const img_formats = [
+    "jpg",
+    "png",
+    "gif",
+    "bmp",
+    "tiff",
+    "webp",
+    "heif",
+    "svg",
+  ];
+  const code_formats = [
+    ".js",
+    ".py",
+    "jsx",
+    "html",
+    "css",
+    ".ts",
+    "tsx",
+    "cpp",
+    "glsl",
+    "java",
+    ".rb",
+    ".cs",
+    ".rs",
+    ".go",
+    ".pd",
+    "amxd",
+    "mxt",
+    "ens",
+    "tox",
+    "toe",
+  ];
+
+  const counts = {
+    image: 0,
+    audio: 0,
+    video: 0,
+    code: 0,
+  };
+
+  // check attachments
+  message.attachments.forEach((attachment) => {
+    const last_three = get_last_n_characters(attachment.name, 3);
+    const last_four = get_last_n_characters(attachment.name, 4);
+
+    if (img_formats.includes(last_three) || img_formats.includes(last_four)) {
+      counts.image++;
+    } else if (
+      audio_formats.includes(last_three) ||
+      audio_formats.includes(last_four)
+    ) {
+      counts.audio++;
+    } else if (
+      video_formats.includes(last_three) ||
+      video_formats.includes(last_four)
+    ) {
+      counts.video++;
+    } else if (
+      code_formats.includes(last_three) ||
+      code_formats.includes(last_four)
+    ) {
+      counts.code++;
+    }
+  });
+
+  // check if msg text is a code block
+  if (message.content.includes("```")) {
+    counts.code++;
+  }
+
+  return counts;
+}
+
+function get_last_n_characters(string, n) {
+  return string.substring(string.length - n, string.length);
+}
 
 module.exports = {
   get_user_message_count,
