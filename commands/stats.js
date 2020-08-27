@@ -2,7 +2,9 @@ const Discord = require("discord.js");
 const { get_user_message_count } = require("../db/user-model");
 
 exports.run = async (bot, message, args) => {
-  const msg_count = await get_user_message_count(message.author.id);
+  const { user, message_details } = await get_user_message_count(
+    message.author.id
+  );
   const author_id = message.author.id;
   const guild_id = message.guild.id;
   const joined_at = new Date(message.member.joinedAt);
@@ -13,12 +15,19 @@ exports.run = async (bot, message, args) => {
     .resolve(guild_id)
     .members.resolve(author_id)
     .user.avatarURL();
+  const [top_channel] = message_details.sort(
+    (a, b) => b.total_count - a.total_count
+  );
 
   const embed = new Discord.MessageEmbed()
     .setTitle(`Stats for ${message.member.displayName}`)
     .addFields(
+      { name: "messages sent:", value: user.messages_sent },
+      {
+        name: "top channel:",
+        value: `${top_channel.channel_name} (${top_channel.total_count}msgs)`,
+      },
       { name: "joined:", value: joined_at.toLocaleString() },
-      { name: "messages sent:", value: msg_count },
       { name: "last message:", value: last_msg.toLocaleString() }
     )
     .setImage(avatar)
