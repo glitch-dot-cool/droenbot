@@ -2,8 +2,11 @@ const db = require("./db-model");
 
 const get_user_message_count = async (discord_id) => {
   try {
-    const [{ messages_sent }] = await db.findBy("users", { discord_id });
-    return messages_sent;
+    const [user] = await db.findBy("users", { discord_id });
+    const message_details = await db.findBy("message_details", {
+      user_fk: user.id,
+    });
+    return { user, message_details };
   } catch (error) {
     console.error(error);
   }
