@@ -14,7 +14,9 @@ const update_user_message_count = async (discord_id, message) => {
   if (message.guild) {
     const message_type = check_message_type(message);
     const [user] = await db.findBy("users", { discord_id });
-    const [user_message_details] = await db.findBy("message_details", {});
+    const user_message_details = await db.findBy("message_details", {
+      user_fk: user.id,
+    });
 
     // if no entry for user, create one
     if (!user) {
@@ -35,8 +37,12 @@ const update_user_message_count = async (discord_id, message) => {
       );
     }
 
-    // if no user_message_details, initialize it
-    if (!user_message_details) {
+    const channel_message_details = user_message_details.filter(
+      (channel) => channel.channel_id === Number(message.channel.id)
+    );
+
+    // if no user_message_details for the channel, initialize it
+    if (!channel_message_details.length) {
       const messageData = {
         user_fk: user.id,
         channel_id: message.channel.id,
@@ -50,16 +56,18 @@ const update_user_message_count = async (discord_id, message) => {
 
       await db.insert("message_details", messageData);
     } else {
+      const [existing] = channel_message_details;
+
       await db.update(
         "message_details",
         {
-          total_count: user_message_details.total_count + 1,
-          image_count: user_message_details.image_count + message_type.image,
-          audio_count: user_message_details.audio_count + message_type.audio,
-          video_count: user_message_details.video_count + message_type.video,
-          code_count: user_message_details.code_count + message_type.code,
+          total_count: existing.total_count + 1,
+          image_count: existing.image_count + message_type.image,
+          audio_count: existing.audio_count + message_type.audio,
+          video_count: existing.video_count + message_type.video,
+          code_count: existing.code_count + message_type.code,
         },
-        { id: user.id }
+        { user_fk: user.id, channel_id: message.channel.id }
       );
     }
   }
