@@ -136,7 +136,7 @@ async function select(message) {
 
 function warn_invalid_command(message) {
   message.reply(
-    "Invalid command. Valid commands are `add`, `update`, `delete`, `select`, and `list`"
+    "Invalid command. Valid commands are `add`, `delete`, `select`, and `list`"
   );
 }
 
