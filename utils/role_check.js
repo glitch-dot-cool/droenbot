@@ -11,7 +11,7 @@ function role_check(bot, message, role_name) {
     if (!role) {
       return false;
     } else {
-      is_member = members.has(user_id);
+      is_member = role.members.has(user_id);
     }
   } else {
     is_member = message.member.roles.cache.some(
