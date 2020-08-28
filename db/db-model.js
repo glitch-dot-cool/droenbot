@@ -1,7 +1,11 @@
 const db = require("./db-config.js");
 
-function find(table) {
-  return db(table);
+function find(table, limit) {
+  if (!limit) {
+    return db(table);
+  } else {
+    return db(table).limit(limit);
+  }
 }
 
 function findBy(table, filter) {
