@@ -4,6 +4,15 @@ const db = require("../db/db-model");
 exports.run = async (bot, message, args) => {
   const syntax = "`!motion [title]\n[description]\n[duration in hours]`";
 
+  const is_member = message.member.roles.cache.some(
+    (role) => role.name === "glitch.cool"
+  );
+
+  if (!is_member) {
+    message.reply("Sorry, you don't have permission to use this command.");
+    return;
+  }
+
   // list motions
   if (args[0] === "list") {
     // 25 is the max number of fields in embeds
@@ -26,8 +35,6 @@ exports.run = async (bot, message, args) => {
   else if (args[0] === "view") {
     const [command, id] = args;
     const [motion] = await db.findBy("votes", { id });
-
-    console.log(motion);
 
     const embed = new Discord.MessageEmbed()
       .setTitle(motion.title)
