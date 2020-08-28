@@ -1,12 +1,10 @@
 const Discord = require("discord.js");
 const db = require("../db/db-model");
+const role_check = require("../utils/role_check");
 
 exports.run = async (bot, message, args) => {
   const syntax = "`!motion [title]\n[description]\n[duration in hours]`";
-
-  const is_member = message.member.roles.cache.some(
-    (role) => role.name === "glitch.cool"
-  );
+  const is_member = role_check(bot, message, "glitch.cool");
 
   if (!is_member) {
     message.reply("Sorry, you don't have permission to use this command.");

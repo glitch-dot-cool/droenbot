@@ -6,7 +6,6 @@ function find(table, limit, order_by, sort_order = "desc") {
   } else if (limit && !order_by) {
     return db(table).limit(limit);
   } else if (limit && order_by) {
-    console.log("orderby!");
     return db(table).limit(limit).orderBy(order_by, sort_order);
   }
 }
