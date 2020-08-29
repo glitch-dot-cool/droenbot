@@ -10,17 +10,32 @@ exports.run = async (bot, message, args) => {
     case "view":
       view_infractions(args, message);
       break;
-
+    case "remove":
+    case "delete":
+      remove_infraction(args, message);
+      break;
     default:
-      lodge_infraction(args, message);
+      add_infraction(args, message);
   }
 };
 
+async function remove_infraction(args, message) {
+  const [mode, infractionID] = args;
+
+  try {
+    await infractions.remove(infractionID);
+    message.reply("Successfully removed infraction");
+  } catch (error) {
+    console.log(error);
+    message.reply(
+      "Could not remove infraction - likely an invalid ID. Try calling `!infraction list [userID]` to view IDs"
+    );
+  }
+}
+
 async function view_infractions(args, message) {
   const [mode, userID] = args;
-
   const user_infractions = await infractions.fetch(userID);
-  console.log(user_infractions);
 
   if (user_infractions.length) {
     const infraction_embed = new Discord.MessageEmbed()
@@ -28,7 +43,7 @@ async function view_infractions(args, message) {
       .addFields(
         user_infractions.map((infraction) => {
           return {
-            name: infraction.description,
+            name: `${infraction.id} - ${infraction.description}`,
             value: `reported by: ${infraction.reported_by}`,
           };
         })
@@ -41,7 +56,7 @@ async function view_infractions(args, message) {
   }
 }
 
-async function lodge_infraction(args, message) {
+async function add_infraction(args, message) {
   const userID = args[0];
   const description = args.slice(1).join(" ");
 
