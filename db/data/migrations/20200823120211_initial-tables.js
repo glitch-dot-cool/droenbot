@@ -1,9 +1,8 @@
 exports.up = function (knex) {
   return knex.schema
     .createTable("users", (tbl) => {
-      tbl.increments();
+      tbl.integer("id").unsigned().notNullable().unique().primary();
       tbl.string("username").notNullable().unique();
-      tbl.string("discord_id").notNullable().unique();
       tbl.timestamp("member_since").notNullable();
       tbl.integer("messages_sent").unsigned().notNullable();
       tbl.integer("level").unsigned().notNullable();
