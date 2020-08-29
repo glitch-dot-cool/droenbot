@@ -1,8 +1,8 @@
 const db = require("./db-model");
 
-const get_user_message_count = async (discord_id) => {
+const get_user_message_count = async (id) => {
   try {
-    const [user] = await db.findBy("users", { discord_id });
+    const [user] = await db.findBy("users", { id });
     const message_details = await db.findBy("message_details", {
       user_fk: user.id,
     });
@@ -12,16 +12,16 @@ const get_user_message_count = async (discord_id) => {
   }
 };
 
-const update_user_message_count = async (discord_id, message) => {
+const update_user_message_count = async (id, message) => {
   // prevent points from accruing via DMs to bot
   if (message.guild) {
     const message_type = check_message_type(message);
-    let [user] = await db.findBy("users", { discord_id });
+    let [user] = await db.findBy("users", { id });
 
     // if no entry for user, create one
     if (!user) {
       const userData = {
-        discord_id: message.author.id,
+        id: message.author.id,
         username: message.author.username,
         member_since: new Date(message.member.joinedAt),
         messages_sent: 1,
@@ -33,12 +33,12 @@ const update_user_message_count = async (discord_id, message) => {
       await db.update(
         "users",
         { messages_sent: user.messages_sent + 1 },
-        { id: user.id }
+        { id: message.author.id }
       );
     }
 
     const user_message_details = await db.findBy("message_details", {
-      user_fk: user.id,
+      user_fk: message.author.id,
     });
 
     const channel_message_details = user_message_details.filter(
@@ -48,7 +48,7 @@ const update_user_message_count = async (discord_id, message) => {
     // if no user_message_details for the channel, initialize it
     if (!channel_message_details.length) {
       const messageData = {
-        user_fk: user.id,
+        user_fk: message.author.id,
         channel_id: message.channel.id,
         channel_name: message.channel.name,
         total_count: 1,
@@ -71,7 +71,7 @@ const update_user_message_count = async (discord_id, message) => {
           video_count: existing.video_count + message_type.video,
           code_count: existing.code_count + message_type.code,
         },
-        { user_fk: user.id, channel_id: message.channel.id }
+        { user_fk: message.author.id, channel_id: message.channel.id }
       );
     }
   }

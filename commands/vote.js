@@ -35,11 +35,8 @@ exports.run = async (bot, message, args) => {
           message.reply("Sorry, this motion has expired.");
         }
 
-        const [user] = await db.findBy("users", {
-          discord_id: message.author.id,
-        });
         const vote_record = await db.findBy("vote_participants", {
-          user_fk: user.id,
+          user_fk: message.author.id,
           vote_fk: id,
         });
 
@@ -54,7 +51,7 @@ exports.run = async (bot, message, args) => {
           );
 
           await db.insert("vote_participants", {
-            user_fk: user.id,
+            user_fk: message.author.id,
             vote_fk: id,
           });
 
