@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const colors = require("colors");
 const config = require("./config.json");
 const ascii = require("./droenArt.js");
+const { update_user_message_count } = require("./db/user-model");
 
 const bot = new Discord.Client();
 
@@ -17,8 +18,19 @@ bot.on("warn", (err) => console.warn(err.yellow));
 bot.on("error", (err) => console.error(err.red));
 
 bot.on("message", (message) => {
-  // check if message doesn't contain command prefix or if author is bot
-  if (!message.content.startsWith(config.prefix) || message.author.bot) {
+  // ignore messages posted by bots
+  if (message.author.bot) {
+    return;
+  }
+
+  update_user_message_count(message.author.id, message);
+
+  command_handler(message);
+});
+
+function command_handler(message) {
+  // ignore non-commands
+  if (!message.content.startsWith(config.prefix)) {
     return;
   }
 
@@ -28,9 +40,9 @@ bot.on("message", (message) => {
   const command = args.shift().toLowerCase().replace("/", "");
 
   try {
-    const commandFile = require(`./commands/${command}.js`);
-    commandFile.run(bot, message, args);
+    const command_file = require(`./commands/${command}.js`);
+    command_file.run(bot, message, args);
   } catch (error) {
     console.error(error.red);
   }
-});
+}
