@@ -1,7 +1,7 @@
 exports.up = function (knex) {
   return knex.schema
     .createTable("users", (tbl) => {
-      tbl.integer("id").unsigned().notNullable().unique().primary();
+      tbl.string("id").notNullable().unique().primary();
       tbl.string("username").notNullable().unique();
       tbl.timestamp("member_since").notNullable();
       tbl.integer("messages_sent").unsigned().notNullable();
