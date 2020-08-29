@@ -30,6 +30,11 @@ exports.run = async (bot, message, args) => {
         return;
       } else {
         const [motion] = await db.findBy("votes", { id });
+
+        if (new Date(motion.expiry) < Date.now()) {
+          message.reply("Sorry, this motion has expired.");
+        }
+
         const [user] = await db.findBy("users", {
           discord_id: message.author.id,
         });
@@ -52,6 +57,8 @@ exports.run = async (bot, message, args) => {
             user_fk: user.id,
             vote_fk: id,
           });
+
+          message.reply("Successfully cast your vote.");
         } else {
           message.reply("You've already voted! You can't double-vote.");
         }
