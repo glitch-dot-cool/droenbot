@@ -1,8 +1,34 @@
+const Discord = require("discord.js");
+
 exports.run = async (bot, message, args) => {
   const [role_name] = args;
-  const restricted_roles = ["mod", "glitch.cool"];
+  const restricted_roles = [
+    "mod",
+    "glitch.cool",
+    "x",
+    "Server Booster",
+    "@everyone",
+  ];
 
-  if (!restricted_roles.includes(role_name) && !role_name.includes("admin")) {
+  if (role_name === "list") {
+    let list = "";
+    const roles = await message.guild.roles.fetch();
+    const filtered_roles = roles.cache.filter(
+      (role) =>
+        !restricted_roles.includes(role.name) && !role.name.includes("admin")
+    );
+
+    filtered_roles.forEach((role) => (list += `${role.name}\n`));
+
+    const list_embed = new Discord.MessageEmbed()
+      .setTitle("List of Roles:")
+      .setDescription(list);
+
+    message.channel.send(list_embed);
+  } else if (
+    !restricted_roles.includes(role_name) &&
+    !role_name.includes("admin")
+  ) {
     const role = message.guild.roles.cache.find(
       (role) => role.name === role_name
     );
