@@ -1,21 +1,27 @@
 const db = require("../db/db-model");
 const infractions = require("../db/infraction-model");
 const Discord = require("discord.js");
+const role_check = require("../utils/role_check");
 
 exports.run = async (bot, message, args) => {
   const [mode] = args;
+  const is_member = role_check(bot, message, "god");
 
-  switch (mode) {
-    case "list":
-    case "view":
-      view_infractions(args, message);
-      break;
-    case "remove":
-    case "delete":
-      remove_infraction(args, message);
-      break;
-    default:
-      add_infraction(args, message);
+  if (is_member) {
+    switch (mode) {
+      case "list":
+      case "view":
+        view_infractions(args, message);
+        break;
+      case "remove":
+      case "delete":
+        remove_infraction(args, message);
+        break;
+      default:
+        add_infraction(args, message);
+    }
+  } else {
+    message.reply("Sorry, this is a restricted command.");
   }
 };
 
