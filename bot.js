@@ -1,8 +1,10 @@
 const Discord = require("discord.js");
+const express = require("express");
 const colors = require("colors");
 const config = require("./config.json");
 const ascii = require("./droenArt.js");
 const { update_user_message_count } = require("./db/user-model");
+const webhook_router = require("./api/webhook-router");
 
 const bot = new Discord.Client();
 
@@ -46,3 +48,15 @@ function command_handler(message) {
     console.error(error.red);
   }
 }
+
+/////////////////////////////////
+////////  EXPRESS SERVER ////////
+/////////////////////////////////
+
+const server = express();
+const PORT = 3000;
+
+server.use(express.json());
+server.use("/webhooks", webhook_router);
+
+server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

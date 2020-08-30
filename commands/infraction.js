@@ -5,7 +5,7 @@ const role_check = require("../utils/role_check");
 
 exports.run = async (bot, message, args) => {
   const [mode] = args;
-  const is_member = role_check(bot, message, "god");
+  const is_member = role_check(bot, message, "glitch.cool");
 
   if (is_member) {
     switch (mode) {
