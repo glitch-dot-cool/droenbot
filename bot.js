@@ -1,15 +1,10 @@
 const Discord = require("discord.js");
 const express = require("express");
-const { execSync } = require("child_process");
 const colors = require("colors");
 const config = require("./config.json");
 const ascii = require("./droenArt.js");
 const { update_user_message_count } = require("./db/user-model");
-const { validate_github_webhook } = require("./utils/validate_github_webhook");
-
-const server = express();
-const PORT = 3000;
-server.use(express.json());
+const webhook_router = require("./api/webhook-router");
 
 const bot = new Discord.Client();
 
@@ -54,18 +49,14 @@ function command_handler(message) {
   }
 }
 
-server.post("/webhooks/github", validate_github_webhook, async (req, res) => {
-  try {
-    res.status(200).end();
-    // update bot
-    execSync(`(git pull origin master && forever restart bot.js)`);
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to update and restart bot",
-      error: error.toString(),
-    });
-    console.error(error.red);
-  }
-});
+/////////////////////////////////
+////////  EXPRESS SERVER ////////
+/////////////////////////////////
+
+const server = express();
+const PORT = 3000;
+
+server.use(express.json());
+server.use("/webhooks", webhook_router);
 
 server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
