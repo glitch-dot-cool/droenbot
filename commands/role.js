@@ -1,7 +1,8 @@
 const Discord = require("discord.js");
 
 exports.run = async (bot, message, args) => {
-  const [role_name] = args;
+  const role_name = args.join(" ");
+
   const restricted_roles = [
     "mod",
     "glitch.cool",
