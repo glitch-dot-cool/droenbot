@@ -18,6 +18,7 @@
   "homepage": "https://github.com/glitch-dot-cool/droenbot#readme",
   "dependencies": {
     "axios": "^0.19.2",
+    "buffer-equal-constant-time": "^1.0.1",
     "colors": "^1.4.0",
     "discord.js": "^12.2.0",
     "express": "^4.17.1",
