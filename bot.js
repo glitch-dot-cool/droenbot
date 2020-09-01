@@ -1,3 +1,6 @@
+// set the process title so it can be killed with `npm run stop`
+process.title = "droenbot";
+
 const Discord = require("discord.js");
 const express = require("express");
 const colors = require("colors");

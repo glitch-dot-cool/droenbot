@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "develop": "nodemon bot.js"
+    "develop": "nodemon bot.js",
+    "start": "node bot.js",
+    "stop": "pkill --signal SIGINT droenbot",
+    "restart": "npm run stop && npm run start"
   },
   "repository": {
     "type": "git",
