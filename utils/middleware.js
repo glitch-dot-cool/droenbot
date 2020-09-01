@@ -6,7 +6,7 @@ const validate_github_webhook = (req, res, next) => {
   const { headers } = req;
   const { ref: branch } = req.body;
   const local_hash = hash_secret(github_secret, JSON.stringify(req.body));
-  const remote_hash = headers["X-Hub-Signature"];
+  const remote_hash = headers["x-hub-signature"];
 
   if (branch.includes("master") && verify_signatures(local_hash, remote_hash)) {
     next();
