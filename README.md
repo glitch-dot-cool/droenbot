@@ -44,4 +44,4 @@ Each command has access to the following, representing objects within the Discor
 
 Ex. `!emojitext hello world` --> `["hello", "world"]`. 
 
-Typically one of the first things you'll do in a command is determine how you will parse arguments, if any. Often you will want to use string methods like `.join()` and `.split()`.
+###### Typically one of the first things you'll do in a command is determine how you will parse arguments, if any. Often you will want to use string methods like `.join()` and `.split()`.
