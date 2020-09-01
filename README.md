@@ -1,5 +1,5 @@
 # droenbot
-[glitch[dot]cool](https://glitch.cool)'s very own Discord bot.
+[glitch[dot]cool](https://glitch.cool)'s very own Discord bot, built with Node.js + sqlite3 + [Discord.js](https://discord.js.org/#/).
 
 ## quickstart
 
