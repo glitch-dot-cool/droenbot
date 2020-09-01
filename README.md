@@ -45,3 +45,15 @@ Each command has access to the following, representing objects within the Discor
 Ex. `!emojitext hello world` --> `["hello", "world"]`. 
 
 ###### Typically one of the first things you'll do in a command is determine how you will parse arguments, if any. Often you will want to use string methods like `.join()` and `.split()`.
+
+
+## want-list
+
+### scheduling system
+for scheduling things like votes, reminders, and periodic server announcements.
+
+### poll system
+database tables are already in-place, just need to implement.
+
+### fun, query-able api-driven commands
+things like `!wiki` or `!youtube`, but also maybe some artsy stuff like vsts or random creative commons assets or...sky's the limit really.
