@@ -1,9 +1,16 @@
-const db = require("./db-model");
+const db = require("./db-config.js");
+const db_model = require("./db-model");
+const {
+  check_message_type,
+  get_top_channels,
+  get_top_users,
+  get_media_counts,
+} = require("../utils/user-model-utils");
 
 const get_user_message_count = async (id) => {
   try {
-    const [user] = await db.findBy("users", { id });
-    const message_details = await db.findBy("message_details", {
+    const [user] = await db_model.findBy("users", { id });
+    const message_details = await db_model.findBy("message_details", {
       user_fk: user.id,
     });
     return { user, message_details };
@@ -16,7 +23,7 @@ const update_user_message_count = async (id, message) => {
   // prevent points from accruing via DMs to bot
   if (message.guild) {
     const message_type = check_message_type(message);
-    let [user] = await db.findBy("users", { id });
+    let [user] = await db_model.findBy("users", { id });
 
     // if no entry for user, create one
     if (!user) {
@@ -28,16 +35,16 @@ const update_user_message_count = async (id, message) => {
         level: 1,
       };
 
-      [user] = await db.insert("users", userData);
+      [user] = await db_model.insert("users", userData);
     } else {
-      await db.update(
+      await db_model.update(
         "users",
         { messages_sent: user.messages_sent + 1 },
         { id: message.author.id }
       );
     }
 
-    const user_message_details = await db.findBy("message_details", {
+    const user_message_details = await db_model.findBy("message_details", {
       user_fk: message.author.id,
     });
 
@@ -58,11 +65,11 @@ const update_user_message_count = async (id, message) => {
         code_count: message_type.code,
       };
 
-      await db.insert("message_details", messageData);
+      await db_model.insert("message_details", messageData);
     } else {
       const [existing] = channel_message_details;
 
-      await db.update(
+      await db_model.update(
         "message_details",
         {
           total_count: existing.total_count + 1,
@@ -77,87 +84,30 @@ const update_user_message_count = async (id, message) => {
   }
 };
 
-function check_message_type(message) {
-  const audio_formats = ["wav", "mp3", "flac", "aiff", "ogg"];
-  const video_formats = ["mp4", "mov", "webm", "mkv", "gifv", "avi", "wmv"];
-  const img_formats = [
-    "jpg",
-    "png",
-    "gif",
-    "bmp",
-    "tiff",
-    "webp",
-    "heif",
-    "svg",
-  ];
-  const code_formats = [
-    ".js",
-    ".py",
-    "jsx",
-    "html",
-    "css",
-    ".ts",
-    "tsx",
-    "cpp",
-    "glsl",
-    "java",
-    ".rb",
-    ".cs",
-    ".rs",
-    ".go",
-    ".pd",
-    "amxd",
-    "mxt",
-    "ens",
-    "tox",
-    "toe",
-  ];
-
-  const counts = {
-    image: 0,
-    audio: 0,
-    video: 0,
-    code: 0,
-  };
-
-  // check attachments
-  message.attachments.forEach((attachment) => {
-    const last_three = get_last_n_characters(attachment.name, 3);
-    const last_four = get_last_n_characters(attachment.name, 4);
-
-    if (img_formats.includes(last_three) || img_formats.includes(last_four)) {
-      counts.image++;
-    } else if (
-      audio_formats.includes(last_three) ||
-      audio_formats.includes(last_four)
-    ) {
-      counts.audio++;
-    } else if (
-      video_formats.includes(last_three) ||
-      video_formats.includes(last_four)
-    ) {
-      counts.video++;
-    } else if (
-      code_formats.includes(last_three) ||
-      code_formats.includes(last_four)
-    ) {
-      counts.code++;
-    }
+const get_server_stats = async () => {
+  const message_details = await db("users as u").join("message_details", {
+    user_fk: "u.id",
   });
 
-  // check if msg text is a code block
-  if (message.content.includes("```")) {
-    counts.code++;
-  }
+  const total_messages = message_details.reduce(
+    (sum, user) => (sum += user.total_count),
+    0
+  );
 
-  return counts;
-}
+  const top_channels = get_top_channels(message_details, 10);
+  const top_users = get_top_users(message_details, 10);
+  const media_counts = get_media_counts(message_details);
 
-function get_last_n_characters(string, n) {
-  return string.substring(string.length - n, string.length);
-}
+  return {
+    top_channels,
+    top_users,
+    total_messages,
+    media_counts,
+  };
+};
 
 module.exports = {
   get_user_message_count,
   update_user_message_count,
+  get_server_stats,
 };
