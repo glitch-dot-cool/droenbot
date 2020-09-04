@@ -5,9 +5,8 @@
   "main": "index.js",
   "scripts": {
     "develop": "nodemon bot.js",
-    "start": "node bot.js",
-    "stop": "pkill --signal SIGINT droenbot",
-    "restart": "npm run stop && npm run start"
+    "start": "sudo -u root forever start bot.js",
+    "stop": "pkill --signal SIGINT droenbot"
   },
   "repository": {
     "type": "git",
