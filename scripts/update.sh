@@ -1,2 +1,2 @@
 git pull origin master
-npm run restart
+sudo -u root forever restart bot.js
