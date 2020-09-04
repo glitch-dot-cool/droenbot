@@ -16,6 +16,11 @@ exports.run = (bot, message, args) => {
     0: ":zero:",
     "!": ":grey_exclamation:",
     "?": ":grey_question:",
+    "#": ":hash:",
+    "*": ":asterisk:",
+    "+": ":heavy_plus_sign:",
+    "-": ":heavy_minus_sign:",
+    "/": ":heavy_division_sign:",
   };
 
   for (var i = 0; i < input.length; i++) {
