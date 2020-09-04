@@ -12,7 +12,7 @@
 
 ## a note on discord terminology
 
-Discord's API has some slightly weird terminology, so to quickly address that:
+Discord's API has some slightly weird terminology which I don't always follow, so to quickly address that:
 
 `Guild` = server
 
@@ -46,6 +46,19 @@ Ex. `!emojitext hello world` --> `["hello", "world"]`.
 
 ###### Typically one of the first things you'll do in a command is determine how you will parse arguments, if any. Often you will want to use string methods like `.join()` and `.split()`.
 
+## restricting use of commands by role
+
+There's a built-in helper function under the `/utils` directory called `role_check()` which you can use to determine if the user who issued a command has a given role. This function will handle messages sent in-server and also DMs sent to Droenbot. `role_check()` accepts three parameters: `bot`, `message`, and `role` (the role you're testing for).
+
+Usage:
+```javascript
+const role_check = require("../utils/role_check");
+const is_mod = role_check(bot, message, "mod");
+
+if (is_mod){
+  // run admin-only command
+} else message.reply("Sorry, you don't have permission to use this command!");
+```
 
 ## want-list
 
