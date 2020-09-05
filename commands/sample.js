@@ -5,16 +5,11 @@ const { freesound_token } = require("../config.json");
 
 exports.run = async (bot, message, args) => {
   const arguments = yargs.parse(args);
-  const query = arguments._.join(" ");
   const limit = arguments.limit || 15;
-  const page = arguments.page || 1;
-  const group = arguments.group ? 1 : 0;
 
   const {
     data: { results },
-  } = await axios.get(
-    `https://freesound.org/apiv2/search/text/?query=${query}&token=${freesound_token}&page=${page}&group_by_pack=${group}`
-  );
+  } = await axios.get(make_url(arguments));
 
   // make + append url field
   results.map(
@@ -36,3 +31,33 @@ exports.run = async (bot, message, args) => {
 
   message.channel.send(embed);
 };
+
+function make_url(args) {
+  const query = args._.join(" ");
+  const page = args.page || 1;
+  const group = args.group ? 1 : 0;
+  const tags = make_tag_filter(args.tag);
+
+  let url = `https://freesound.org/apiv2/search/text/?query=${query}&token=${freesound_token}&page=${page}&group_by_pack=${group}`;
+
+  if (tags) {
+    url += tags;
+  }
+
+  return url;
+}
+
+function make_tag_filter(tags) {
+  if (Array.isArray(tags)) {
+    return tags.reduce((str, tag, idx) => {
+      if (idx === 0) {
+        str += `&filter=tag:${tag}`;
+      } else {
+        str += `%20tag:${tag}`;
+      }
+      return str;
+    }, "");
+  } else {
+    return `&filter=tag:${tags}`;
+  }
+}
