@@ -66,7 +66,7 @@ function make_url(args) {
 
   let url = `https://freesound.org/apiv2/search/text/?query=${query}&token=${freesound_token}&page=${page}&group_by_pack=${group}`;
 
-  if (tags) {
+  if (args.tag) {
     url += tags;
   }
 
