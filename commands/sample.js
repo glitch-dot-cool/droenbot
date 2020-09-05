@@ -24,6 +24,7 @@ exports.run = async (bot, message, args) => {
 
   const embed = new Discord.MessageEmbed()
     .setTitle("Search Results:")
+    .setDescription("Note: these are *download links*")
     .addFields(
       results.slice(0, limit).map((sample) => {
         return { name: sample.name, value: sample.url };
