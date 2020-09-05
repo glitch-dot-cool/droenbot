@@ -24,6 +24,7 @@ exports.run = async (bot, message, args) => {
         "`!sample drum machine --page 2`"
       )
       .addField("Limit results:", "`!sample drum machine --limit 3`")
+      .addField("Group results by pack:", "`!sample drum machine --group`")
       .setFooter(
         "Tip: you can combine flags and you can search by multiple tags"
       );
