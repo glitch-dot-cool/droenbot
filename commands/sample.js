@@ -8,8 +8,6 @@ exports.run = async (bot, message, args) => {
   const limit = arguments.limit || 15;
   const help = arguments.info;
 
-  console.log(arguments);
-
   if (help) {
     const embed = new Discord.MessageEmbed()
       .setTitle("Options for `!sample` command:")
