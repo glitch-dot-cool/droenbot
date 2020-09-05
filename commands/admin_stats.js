@@ -13,6 +13,7 @@ exports.run = async (bot, message, args) => {
 
     const embed = new Discord.MessageEmbed()
       .setTitle("Server-wide Stats:")
+      .setDescription("Stats are as of August 30th, 2020")
       .addFields(
         {
           name: "Top Channels by Message Count:",
