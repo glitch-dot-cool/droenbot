@@ -6,6 +6,33 @@ const { freesound_token } = require("../config.json");
 exports.run = async (bot, message, args) => {
   const arguments = yargs.parse(args);
   const limit = arguments.limit || 15;
+  const help = arguments.info;
+
+  console.log(arguments);
+
+  if (help) {
+    const embed = new Discord.MessageEmbed()
+      .setTitle("Options for `!sample` command:")
+      .setDescription(
+        "Searches freesound.org and returns downloads links to samples."
+      )
+      .addField("Basic Usage:", "`!sample drum machine`")
+      .addField(
+        "Add tag filters:",
+        "`!samples drum machine --tag lofi --tag 808`"
+      )
+      .addField(
+        "Skip to different result pages:",
+        "`!sample drum machine --page 2`"
+      )
+      .addField("Limit results:", "`!sample drum machine --limit 3`")
+      .setFooter(
+        "Tip: you can combine flags and you can search by multiple tags"
+      );
+
+    message.channel.send(embed);
+    return;
+  }
 
   const {
     data: { results },
@@ -21,7 +48,7 @@ exports.run = async (bot, message, args) => {
 
   const embed = new Discord.MessageEmbed()
     .setTitle("Search Results:")
-    .setDescription("Try calling `!sample --help` for options")
+    .setDescription("Try calling `!sample --info` for options")
     .addFields(
       results.slice(0, limit).map((sample) => {
         return { name: sample.name, value: `[download](${sample.url})` };
