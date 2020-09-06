@@ -1,11 +1,54 @@
 const Discord = require("discord.js");
+const yargs = require("yargs");
 let vsts = require("../data/vsts.json");
 
 exports.run = async (bot, message, args) => {
-  vsts = Object.entries(vsts);
-  const random_index = Math.floor(Math.random() * vsts.length);
-  const [_, vst] = vsts[random_index];
+  const valid_platforms = ["windows", "mac", "linux"];
+  const arguments = yargs.parse(args);
+  vsts = Object.values(vsts);
 
+  // if a platform is given, attempt to filter by it
+  if (arguments.platform) {
+    // warn if platform is invalid
+    if (!valid_platforms.includes(arguments.platform)) {
+      const invalid_platform_embed = new Discord.MessageEmbed()
+        .setTitle("Invalid Platform")
+        .setDescription("Call `!vst --info` for command options and syntax.")
+        .addField("Valid Platforms:", "`windows`, `mac`, or `linux`")
+        .addField("Syntax:", "`!vst --platform linux`");
+
+      message.channel.send(invalid_platform_embed);
+      return;
+    }
+
+    // if platform is valid, filter for it
+    vsts = vsts.filter((vst) =>
+      vst.platforms.some((platform) =>
+        platform.includes(title_case(arguments.platform))
+      )
+    );
+  }
+
+  // if a tag is provided, filter for it
+  if (arguments.tag) {
+    vsts = vsts.filter((vst) =>
+      vst.tags.some((tag) =>
+        tag.toLowerCase().includes(arguments.tag.toLowerCase())
+      )
+    );
+  }
+
+  // no results found condition
+  if (!vsts.length) {
+    message.reply("No VSTs found with your search parameters.");
+    return;
+  }
+
+  // select random vst
+  const random_index = Math.floor(Math.random() * vsts.length);
+  const vst = vsts[random_index];
+
+  // generate & send result embed
   const embed = new Discord.MessageEmbed()
     .setTitle("Here's your random VST:")
     .setDescription(vst.description)
@@ -18,6 +61,7 @@ exports.run = async (bot, message, args) => {
   message.channel.send(embed);
 };
 
+// utility for making comma-separated lists
 function make_list(array) {
   let string = "";
   array.forEach((item, idx) => {
@@ -29,4 +73,17 @@ function make_list(array) {
   });
 
   return string;
+}
+
+// utility for title-casing strings
+function title_case(string) {
+  return string
+    .toLowerCase()
+    .split("")
+    .map((char, idx) => {
+      if (idx === 0) {
+        return char.toUpperCase();
+      } else return char;
+    })
+    .join("");
 }
