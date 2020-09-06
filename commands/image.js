@@ -7,15 +7,42 @@ exports.run = async (bot, message, args) => {
   let { _: query, $0: self, ...params } = arguments;
   query = query.join(" ");
 
+  // --info help text
+  if (arguments.info) {
+    const info_embed = new Discord.MessageEmbed()
+      .setTitle("Info for `!image` command:")
+      .setDescription("Fetches images via the Creative Commons API")
+      .addField("Basic Usage:", "`!image birds`")
+      .addField("Filter by Format:", "`!image birds --extension jpg`")
+      .addField(
+        "Filter by Size:",
+        "`!image birds --size large`\n valid sizes:\n`small`, `medium`, `large`"
+      )
+      .addField(
+        "Filter by License Type:",
+        "`!image birds --license_type commercial`\n valid license types:\n`commercial`, `modification`, `all-cc`, `all`"
+      )
+      .addField(
+        "Filter by Category:",
+        "`!image birds --categories illustration`\n valid categories:\n`illustration`, `photograph`, or `digitized_artwork`"
+      );
+
+    message.channel.send(info_embed);
+    return;
+  }
+
   // warn if no query provided
   if (!query) {
-    message.reply("You must provide a search term!");
+    message.reply(
+      "You must provide a search term!\nTry calling `!image --info` for usage information."
+    );
     return;
   }
 
   let url = `https://api.creativecommons.engineering/v1/images/?q=${encodeURI(
     query
   )}`;
+  
   // append filters to query string
   for (const key in params) {
     url = append_to_url(url, `${key}=${params[key]}`);
