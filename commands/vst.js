@@ -7,6 +7,24 @@ exports.run = async (bot, message, args) => {
   const arguments = yargs.parse(args);
   vsts = Object.values(vsts);
 
+  // help options
+  if (arguments.info) {
+    const info_embed = new Discord.MessageEmbed()
+      .setTitle("Info for `!vst` command:")
+      .setDescription(
+        "Draws a random VST from a static collection of around 1,400 random VSTs from KVR. You can supply flags to narrow down the selection."
+      )
+      .addField("Basic Usage:", "`!vst`")
+      .addField("Filter by Operating System:", "`!vst --platform linux`")
+      .addField("Filter by Tag:", "`!vst --tag flanger`")
+      .setFooter(
+        "Note: there are not that many VSTs, so obscure tags will likely not produce results"
+      );
+
+    message.channel.send(info_embed);
+    return;
+  }
+
   // if a platform is given, attempt to filter by it
   if (arguments.platform) {
     // warn if platform is invalid
