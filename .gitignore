@@ -1,6 +1,5 @@
 # Droenbot creds & data
 config.json
-data/*
 *.db3
 
 # Logs
