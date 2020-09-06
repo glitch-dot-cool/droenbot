@@ -4,8 +4,8 @@ const axios = require("axios");
 
 exports.run = async (bot, message, args) => {
   const arguments = yargs.parse(args);
-  const base_url = "https://api.creativecommons.engineering/v1";
-  const query = encodeURI(arguments._.join(" "));
+  let { _: query, $0: self, ...params } = arguments;
+  query = query.join(" ");
 
   // warn if no query provided
   if (!query) {
@@ -13,9 +13,17 @@ exports.run = async (bot, message, args) => {
     return;
   }
 
+  let url = `https://api.creativecommons.engineering/v1/images/?q=${encodeURI(
+    query
+  )}`;
+  // append filters to query string
+  for (const key in params) {
+    url = append_to_url(url, `${key}=${params[key]}`);
+  }
+
   const {
     data: { results },
-  } = await axios.get(`${base_url}/images/?q=${query}`);
+  } = await axios.get(url);
 
   // notify if no search results
   if (!results.length) {
@@ -45,3 +53,7 @@ exports.run = async (bot, message, args) => {
 
   message.channel.send(embed);
 };
+
+function append_to_url(url, querystring) {
+  return `${url}&${querystring}`;
+}
