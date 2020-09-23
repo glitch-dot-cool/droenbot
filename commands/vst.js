@@ -84,7 +84,7 @@ function make_list(array) {
   let string = "";
   array.forEach((item, idx) => {
     if (idx < array.length - 1) {
-      return (string += `${item},`);
+      return (string += `${item}, `);
     } else {
       return (string += item);
     }
