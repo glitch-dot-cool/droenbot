@@ -8,6 +8,7 @@ exports.run = async (bot, message, args) => {
     "glitch.cool",
     "x",
     "Server Booster",
+    "internal-guest",
     "@everyone",
   ];
 
