@@ -9,6 +9,7 @@ exports.run = async (bot, message, args) => {
     "x",
     "Server Booster",
     "internal-guest",
+    "Trello",
     "@everyone",
   ];
 
