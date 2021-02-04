@@ -12,6 +12,7 @@ exports.run = async (bot, message, args) => {
     "Trello",
     "Taco",
     "@everyone",
+    "staff"
   ];
 
   if (role_name === "list") {
