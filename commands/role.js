@@ -12,18 +12,11 @@ exports.run = async (bot, message, args) => {
     "Trello",
     "Taco",
     "@everyone",
-    "staff"
+    "staff",
   ];
 
   if (role_name === "list") {
-    let list = "";
-    const roles = await message.guild.roles.fetch();
-    const filtered_roles = roles.cache.filter(
-      (role) =>
-        !restricted_roles.includes(role.name) && !role.name.includes("admin")
-    );
-
-    filtered_roles.forEach((role) => (list += `${role.name}\n`));
+    const list = await get_role_list(message, restricted_roles);
 
     const list_embed = new Discord.MessageEmbed()
       .setTitle("List of Roles:")
@@ -39,7 +32,16 @@ exports.run = async (bot, message, args) => {
     );
 
     if (!role) {
+      const list = await get_role_list(message, restricted_roles);
+
       message.reply("Sorry, this role doesn't exist.");
+
+      const list_embed = new Discord.MessageEmbed()
+        .setTitle("List of Valid Roles:")
+        .setDescription(list);
+
+      message.channel.send(list_embed);
+
       return;
     }
 
@@ -52,3 +54,15 @@ exports.run = async (bot, message, args) => {
     message.reply("Sorry, this role is restricted.");
   }
 };
+
+async function get_role_list(message, restricted_roles) {
+  let list = "";
+  const roles = await message.guild.roles.fetch();
+  const filtered_roles = roles.cache.filter(
+    (role) =>
+      !restricted_roles.includes(role.name) && !role.name.includes("admin")
+  );
+
+  filtered_roles.forEach((role) => (list += `${role.name}\n`));
+  return list;
+}
