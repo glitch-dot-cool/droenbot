@@ -9,8 +9,9 @@ exports.run = async (bot, message, args) => {
   const guild_id = message.guild.id;
   const joined_at = new Date(message.member.joinedAt);
 
-  const color = bot.guilds.resolve(guild_id).members.resolve(author_id).roles
-    .color.color;
+  const color =
+    bot.guilds.resolve(guild_id).members.resolve(author_id).roles.color.color ||
+    "#1a1a1a";
   const avatar = bot.guilds
     .resolve(guild_id)
     .members.resolve(author_id)
