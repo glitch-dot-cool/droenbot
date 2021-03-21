@@ -1,6 +1,12 @@
 const db = require("../db/db-model");
 const Discord = require("discord.js");
 
+const typeToEmojiMap = {
+  audio: "🔊",
+  visual: "👁️",
+  code: "💻",
+};
+
 exports.run = async (bot, message, args) => {
   const command = args[0].toLowerCase();
   const mod_role = message.member.roles.cache.some(
@@ -133,7 +139,7 @@ async function select(args, message) {
 
     // setup result embed
     const embed = new Discord.MessageEmbed()
-      .setTitle(`This month's ${type} challenge is:`)
+      .setTitle(`${typeToEmojiMap[type]} This month's ${type} challenge is:`)
       .addField(
         selected_challenge.challenge_name,
         selected_challenge.challenge_description || ""
@@ -177,7 +183,9 @@ function format_challenge_sublist(challenges, type) {
 
   // create initial string for reduce, omit if sublist has no entries
   const title = sublist.length
-    ? `**${type.charAt(0).toUpperCase() + type.slice(1)} Challenges**\n`
+    ? `**${typeToEmojiMap[type]} ${
+        type.charAt(0).toUpperCase() + type.slice(1)
+      } Challenges**\n`
     : "";
 
   const result = sublist.reduce((acc, cur) => {
