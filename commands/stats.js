@@ -8,14 +8,14 @@ exports.run = async (bot, message, args) => {
   const author_id = message.author.id;
   const guild_id = message.guild.id;
   const joined_at = new Date(message.member.joinedAt);
-  const last_msg = message.member.lastMessage.createdAt;
+
   const color = bot.guilds.resolve(guild_id).members.resolve(author_id).roles
     .color.color;
   const avatar = bot.guilds
     .resolve(guild_id)
     .members.resolve(author_id)
     .user.avatarURL();
-  const [top_channel] = message_details.sort(
+  const top_channels = message_details.sort(
     (a, b) => b.total_count - a.total_count
   );
 
@@ -24,11 +24,18 @@ exports.run = async (bot, message, args) => {
     .addFields(
       { name: "messages sent:", value: user.messages_sent },
       {
-        name: "top channel:",
-        value: `${top_channel.channel_name} (${top_channel.total_count}msgs)`,
+        name: "#1 channel:",
+        value: `${top_channels[0].channel_name} (${top_channels[0].total_count}msgs)`,
       },
-      { name: "joined:", value: joined_at.toLocaleString() },
-      { name: "last message:", value: last_msg.toLocaleString() }
+      {
+        name: "#2 channel:",
+        value: `${top_channels[1].channel_name} (${top_channels[1].total_count}msgs)`,
+      },
+      {
+        name: "#3 channel:",
+        value: `${top_channels[2].channel_name} (${top_channels[2].total_count}msgs)`,
+      },
+      { name: "joined:", value: joined_at.toLocaleString() }
     )
     .setImage(avatar)
     .setColor(color);
