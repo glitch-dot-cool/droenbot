@@ -1,6 +1,12 @@
 const db = require("../db/db-model");
 const Discord = require("discord.js");
 
+const typeToEmojiMap = {
+  audio: "🔊",
+  visual: "👁️",
+  code: "💻",
+};
+
 exports.run = async (bot, message, args) => {
   const command = args[0].toLowerCase();
   const mod_role = message.member.roles.cache.some(
@@ -22,7 +28,7 @@ exports.run = async (bot, message, args) => {
         break;
       case "select":
       case "draw":
-        select(message);
+        select(args, message);
         break;
       default:
         warn_invalid_command(message);
@@ -33,21 +39,26 @@ exports.run = async (bot, message, args) => {
 };
 
 async function add(arguments, message) {
-  const input_syntax_example = `\`!challenge add make a track underwater\nscuba is prohibited but snorkles are permitted\``;
+  const input_syntax_example = `\`!challenge add audio\nmake a track underwater\nscuba is prohibited but snorkles are permitted\``;
   const args = parse_arguments(arguments);
 
   try {
-    if (args.name && args.name !== " ") {
+    if (
+      args.name &&
+      args.name !== " " &&
+      ["audio", "visual", "code"].includes(args.type) // type must be "audio" or "visual" or "code"
+    ) {
       await db.insert("challenges", {
         challenge_name: args.name,
-        challenge_description: args.description || "N/A",
+        challenge_description: args.description || "",
         due_by: "N/A",
+        type: args.type,
       });
       message.reply("Successfully added challenge");
-    } else throw "Challenge must have a name!";
+    } else throw "Challenge must have a name and a type!";
   } catch (error) {
     message.reply(
-      `Error adding challenge. Please try again and double check your input syntax. Properly formatted inputs should contain a command (add), a name, and an optional description.\nEx:\n${input_syntax_example}`
+      `Error adding challenge. Please try again and double check your input syntax. Properly formatted inputs should contain a command ("add") and a type ("audio", "visual", or "code") on the same line, a name on the next line, and an optional description on the following line.\nEx:\n${input_syntax_example}\n\nAnother reason this operation may have failed is if the challenge name is not unique.`
     );
     console.error(error);
   }
@@ -55,10 +66,10 @@ async function add(arguments, message) {
 
 async function remove(arguments, message) {
   const input_syntax_example = `\`!challenge delete make a track slower than 60bpm\``;
-  const args = parse_arguments(arguments);
+  const [name] = arguments.slice(1).join(" ").split("\n");
 
   try {
-    const id = await db.remove("challenges", { challenge_name: args.name });
+    const id = await db.remove("challenges", { challenge_name: name });
     if (id) {
       message.reply("Successfully deleted challenge");
     } else {
@@ -77,26 +88,36 @@ async function remove(arguments, message) {
 async function list(message) {
   try {
     const challenges = await db.findBy("challenges", { due_by: "N/A" });
+    const challenge_list = format_challenge_list(challenges);
+
     const embed = new Discord.MessageEmbed()
       .setTitle("List of Challenges:")
-      .addFields(
-        challenges.map((challenge) => {
-          return {
-            name: challenge.challenge_name,
-            value: challenge.challenge_description,
-          };
-        })
-      );
+      .setDescription(challenge_list);
     message.channel.send(embed);
   } catch (error) {
     console.error(error);
   }
 }
 
-async function select(message) {
+async function select(args, message) {
   try {
+    const [type] = args.slice(1).join(" ").split("\n");
+
+    if (!type) {
+      message.reply(
+        "You must specify a challenge type of `audio`, `visual`, or `code`."
+      );
+      return;
+    }
+
     // pull random challenge
-    const challenges = await db.findBy("challenges", { due_by: "N/A" });
+    const challenges = await db.findBy("challenges", { type, due_by: "N/A" });
+    if (!challenges.length) {
+      message.reply(
+        "There are no remaining challenges of this type! Create some new ones!"
+      );
+      return;
+    }
     const random_index = Math.floor(Math.random() * challenges.length);
     const selected_challenge = challenges[random_index];
 
@@ -118,10 +139,10 @@ async function select(message) {
 
     // setup result embed
     const embed = new Discord.MessageEmbed()
-      .setTitle("This month's challenge is:")
+      .setTitle(`${typeToEmojiMap[type]} This month's ${type} challenge is:`)
       .addField(
         selected_challenge.challenge_name,
-        selected_challenge.challenge_description
+        selected_challenge.challenge_description || ""
       )
       .setFooter(
         `Due date: ${new Date(due_by).toISOString().substring(0, 10)}`
@@ -141,6 +162,47 @@ function warn_invalid_command(message) {
 }
 
 function parse_arguments(args) {
-  const [name, description] = args.slice(1).join(" ").split("\n");
-  return { name, description };
+  const [type, name, description] = args.slice(1).join(" ").split("\n");
+  return { name, description, type };
+}
+
+function format_challenge_list(challenges) {
+  const audio_challenges = format_challenge_sublist(challenges, "audio");
+  const visual_challenges = format_challenge_sublist(challenges, "visual");
+  const code_challenges = format_challenge_sublist(challenges, "code");
+
+  return assemble_full_list([
+    audio_challenges,
+    visual_challenges,
+    code_challenges,
+  ]);
+}
+
+function format_challenge_sublist(challenges, type) {
+  const sublist = challenges.filter((challenge) => challenge.type === type);
+
+  // create initial string for reduce, omit if sublist has no entries
+  const title = sublist.length
+    ? `**${typeToEmojiMap[type]} ${
+        type.charAt(0).toUpperCase() + type.slice(1)
+      } Challenges**\n`
+    : "";
+
+  const result = sublist.reduce((acc, cur) => {
+    let name = `*${cur.challenge_name}*\n`;
+    const desc = cur.challenge_description
+      ? `\`${cur.challenge_description}\`\n\n`
+      : "";
+
+    // add additional space if no description
+    if (!desc) name += "\n";
+
+    return acc + (name + desc);
+  }, title);
+
+  return result;
+}
+
+function assemble_full_list(sublists) {
+  return sublists.map((list) => `${list}`);
 }
