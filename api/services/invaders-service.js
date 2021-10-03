@@ -2,15 +2,13 @@ const db = require("../../db/db-model");
 
 const insert_high_score = async ({ discord_user, score, level_reached }) => {
   try {
-    console.log(discord_user, score, level_reached);
     return await db.insert("invaders_scores", {
       discord_user,
       score,
       level_reached,
     });
   } catch (error) {
-    console.error(error);
-    return { error, message: "aw shit something broke" };
+    throw "username not recognized";
   }
 };
 

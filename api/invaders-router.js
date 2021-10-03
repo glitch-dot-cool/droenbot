@@ -7,8 +7,12 @@ router.get("/score", async (req, res) => {
 });
 
 router.post("/score", async (req, res) => {
-  const result = await service.insert_high_score(req.body);
-  res.json(result);
+  try {
+    const result = await service.insert_high_score(req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json(error);
+  }
 });
 
 module.exports = router;
