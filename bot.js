@@ -8,6 +8,7 @@ const config = require("./config.json");
 const ascii = require("./droenArt.js");
 const { update_user_message_count } = require("./db/user-model");
 const webhook_router = require("./api/webhook-router");
+const invaders_router = require("./api/invaders-router");
 
 const bot = new Discord.Client();
 
@@ -61,5 +62,6 @@ const PORT = 3000;
 
 server.use(express.json());
 server.use("/webhooks", webhook_router);
+server.use("/invaders", invaders_router);
 
 server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
