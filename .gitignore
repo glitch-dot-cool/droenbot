@@ -1,3 +1,6 @@
+# vscode config
+.vscode/*
+
 # Droenbot creds & data
 config.json
 *.db3
