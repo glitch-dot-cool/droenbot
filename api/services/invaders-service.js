@@ -1,5 +1,3 @@
-const Discord = require("discord.js");
-
 const { server_id } = require("../../config.json");
 const bot = require("../../bot");
 const db = require("../../db/db-model");
