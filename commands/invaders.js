@@ -12,9 +12,9 @@ exports.run = async (bot, message, args) => {
         "https://cdn.discordapp.com/emojis/614926224103571487.png?size=96"
       )
       .addFields(
-        top_scores.map((score) => {
+        top_scores.map((score, idx) => {
           return {
-            name: score.discord_user,
+            name: `${setPosition(idx + 1)} ${score.discord_user}`,
             value: `score: ${score.score} | level reached: ${score.level_reached}`,
           };
         })
@@ -28,4 +28,14 @@ exports.run = async (bot, message, args) => {
       "failed to fetch leaderboard data, cc: <@254686973766139904>"
     );
   }
+};
+
+const setPosition = (index) => {
+  if (index === 1) {
+    return "🥇";
+  } else if (index === 2) {
+    return "🥈";
+  } else if (index === 3) {
+    return "🥉";
+  } else return `${index}.`;
 };
