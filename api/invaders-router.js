@@ -4,8 +4,12 @@ const cors = require("cors");
 const service = require("./services/invaders-service");
 
 router.get("/score", cors(), async (req, res) => {
-  const result = await service.get_high_scores();
-  res.json(result);
+  try {
+    const result = await service.get_high_scores();
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
 });
 
 router.post("/score", cors(), async (req, res) => {

@@ -38,7 +38,7 @@ const get_high_scores = async () => {
     return leaderboard_with_nicknames;
   } catch (error) {
     console.error(error);
-    return { error, message: "aw shit something broke" };
+    throw "failed to fetch leaderboard data";
   }
 };
 
