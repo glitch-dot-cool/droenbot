@@ -13,7 +13,6 @@ const webhook_router = require("./api/webhook-router");
 const invaders_router = require("./api/invaders-router");
 
 const bot = new Discord.Client();
-module.exports.client = bot;
 
 bot.login(config.token);
 
@@ -68,3 +67,5 @@ server.use("/webhooks", webhook_router);
 server.use("/invaders", invaders_router);
 
 server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
+module.exports.client = bot;
