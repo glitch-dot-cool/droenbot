@@ -25,9 +25,10 @@ const get_high_scores = async () => {
           limit: 1,
         });
 
+        const { id, ...entry_without_id } = entry;
+
         return {
-          ...entry,
-          real_user: entry.discord_user,
+          ...entry_without_id,
           discord_user: user.nickname,
         };
       })
