@@ -1,3 +1,7 @@
+const Discord = require("discord.js");
+
+const { server_id } = require("../../config.json");
+const bot = require("../../bot");
 const db = require("../../db/db-model");
 
 const insert_high_score = async ({ discord_user, score, level_reached }) => {
@@ -14,7 +18,23 @@ const insert_high_score = async ({ discord_user, score, level_reached }) => {
 
 const get_high_scores = async () => {
   try {
-    return await db.find("invaders_scores", 10, "score");
+    const server = bot.client.guilds.cache.get(server_id);
+    const leaderboard = await db.find("invaders_scores", 10, "score");
+    const leaderboard_with_nicknames = Promise.all(
+      leaderboard.map(async (entry) => {
+        const user = await server.members.fetch({
+          query: entry.discord_user,
+          limit: 1,
+        });
+
+        return {
+          ...entry,
+          discord_user: user.get(user.firstKey()).nickname,
+        };
+      })
+    );
+
+    return leaderboard_with_nicknames;
   } catch (error) {
     console.error(error);
     return { error, message: "aw shit something broke" };

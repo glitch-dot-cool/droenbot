@@ -13,6 +13,7 @@ const webhook_router = require("./api/webhook-router");
 const invaders_router = require("./api/invaders-router");
 
 const bot = new Discord.Client();
+module.exports.client = bot;
 
 bot.login(config.token);
 
