@@ -17,7 +17,15 @@ const insert_high_score = async ({ discord_user, score, level_reached }) => {
 const get_high_scores = async () => {
   try {
     const server = bot.client.guilds.cache.get(server_id);
-    const leaderboard = await db.find("invaders_scores", 5, "score");
+    const leaderboard = await db.findByMaxValue(
+      "invaders_scores",
+      "score",
+      5,
+      "score",
+      "desc",
+      "discord_user"
+    );
+
     const leaderboard_with_nicknames = await Promise.all(
       leaderboard.map(async (entry) => {
         const [[, user]] = await server.members.fetch({
@@ -25,7 +33,7 @@ const get_high_scores = async () => {
           limit: 1,
         });
 
-        const { id, ...entry_without_id } = entry;
+        const { id, max, ...entry_without_id } = entry;
 
         return {
           ...entry_without_id,

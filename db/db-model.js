@@ -10,6 +10,15 @@ function find(table, limit, order_by, sort_order = "desc") {
   }
 }
 
+function findByMaxValue(table, max, limit, order_by, sort_order, group_by) {
+  return db(table)
+    .max(`${max} as max`)
+    .select("*")
+    .groupBy(group_by)
+    .orderBy(order_by, sort_order)
+    .limit(limit);
+}
+
 function findBy(table, filter) {
   return db(table).where(filter);
 }
@@ -35,6 +44,7 @@ function closeConnection() {
 
 module.exports = {
   find,
+  findByMaxValue,
   findBy,
   insert,
   remove,
