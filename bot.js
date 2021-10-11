@@ -4,7 +4,6 @@ process.title = "droenbot";
 const Discord = require("discord.js");
 const express = require("express");
 const colors = require("colors");
-const cors = require("cors");
 
 const config = require("./config.json");
 const ascii = require("./droenArt.js");
