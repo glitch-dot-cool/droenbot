@@ -7,7 +7,7 @@ exports.run = async (bot, message, args) => {
     const embed = new Discord.MessageEmbed()
       .setTitle("g̶l̴i̷t̷c̴h̵_̷i̴n̶v̵a̷d̸e̶r̵s̵ high scores")
       .setColor("#212121")
-      .setURL("https://glitch-dot-cool.github.io/glitch-invaders/")
+      .setURL("https://invaders.glitch.cool")
       .setThumbnail(
         "https://cdn.discordapp.com/emojis/614926224103571487.png?size=96"
       )
@@ -15,13 +15,13 @@ exports.run = async (bot, message, args) => {
         top_scores.map((score, idx) => {
           return {
             name: `${setPosition(idx + 1)} ${score.discord_user}`,
-            value: `score: ${score.score} | level reached: ${score.level_reached}`,
+            value: `score: ${score.score.toLocaleString()} | level reached: ${
+              score.level_reached
+            }`,
           };
         })
       )
-      .setFooter(
-        "play it at https://glitch-dot-cool.github.io/glitch-invaders/"
-      );
+      .setFooter("play it at invaders.glitch.cool");
     message.channel.send(embed);
   } catch (error) {
     message.channel.send(
