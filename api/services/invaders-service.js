@@ -41,7 +41,12 @@ const get_high_scores = async () => {
   }
 };
 
+const _delete_all_scores = async () => {
+  await db.remove("invaders_scores", true);
+};
+
 module.exports = {
   insert_high_score,
   get_high_scores,
+  _delete_all_scores,
 };
