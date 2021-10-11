@@ -37,7 +37,7 @@ const get_high_scores = async () => {
 
         return {
           ...entry_without_id,
-          discord_user: user.nickname,
+          discord_user: user.nickname || entry.discord_user,
         };
       })
     );
