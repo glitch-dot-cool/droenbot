@@ -23,18 +23,24 @@ exports.run = async (bot, message, args) => {
   const embed = new Discord.MessageEmbed()
     .setTitle(`Stats for ${message.member.displayName}`)
     .addFields(
-      { name: "messages sent:", value: user.messages_sent },
+      { name: "messages sent:", value: user.messages_sent.toLocaleString() },
       {
         name: "#1 channel:",
-        value: `${top_channels[0].channel_name} (${top_channels[0].total_count}msgs)`,
+        value: `${
+          top_channels[0].channel_name
+        } (${top_channels[0].total_count.toLocaleString()}msgs)`,
       },
       {
         name: "#2 channel:",
-        value: `${top_channels[1].channel_name} (${top_channels[1].total_count}msgs)`,
+        value: `${
+          top_channels[1].channel_name
+        } (${top_channels[1].total_count.toLocaleString()}msgs)`,
       },
       {
         name: "#3 channel:",
-        value: `${top_channels[2].channel_name} (${top_channels[2].total_count}msgs)`,
+        value: `${
+          top_channels[2].channel_name
+        } (${top_channels[2].total_count.toLocaleString()}msgs)`,
       },
       { name: "joined:", value: joined_at.toLocaleString() }
     )
