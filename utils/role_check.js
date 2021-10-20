@@ -1,6 +1,6 @@
 const config = require("../config.json");
 
-function role_check(bot, message, role_name) {
+function role_check(bot, message, role_name = "staff") {
   let is_member;
 
   if (message.channel.type === "dm") {

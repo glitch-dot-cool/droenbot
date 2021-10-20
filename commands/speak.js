@@ -1,7 +1,7 @@
 const role_check = require("../utils/role_check");
 
 exports.run = (bot, message, args) => {
-  const is_mod = role_check(bot, message, "glitch.cool");
+  const is_mod = role_check(bot, message);
 
   if (is_mod) {
     const text = args.join(" ");

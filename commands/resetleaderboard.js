@@ -3,7 +3,7 @@ const role_check = require("../utils/role_check");
 const service = require("../api/services/invaders-service");
 
 exports.run = async (bot, message, args) => {
-  const is_mod = role_check(bot, message, "staff");
+  const is_mod = role_check(bot, message);
   const superadmin_id = "254686973766139904";
 
   if (is_mod && message.author.id === superadmin_id) {

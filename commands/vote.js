@@ -5,7 +5,7 @@ exports.run = async (bot, message, args) => {
   const syntax = `\`!vote 12 y\` or \`!vote 12 yea\``;
   const [id, vote] = args;
 
-  const is_member = role_check(bot, message, "glitch.cool");
+  const is_member = role_check(bot, message);
 
   if (!is_member) {
     message.reply(
