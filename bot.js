@@ -10,6 +10,7 @@ const ascii = require("./droenArt.js");
 const { update_user_message_count } = require("./db/user-model");
 const webhook_router = require("./api/webhook-router");
 const invaders_router = require("./api/invaders-router");
+const role_check = require("./utils/role_check");
 
 const bot = new Discord.Client();
 
@@ -28,6 +29,14 @@ bot.on("message", (message) => {
   // ignore messages posted by bots
   if (message.author.bot) {
     return;
+  }
+
+  // warn if outside of public bot channel (if not a staff member)
+  const isAdmin = role_check(bot, message);
+  if (!isAdmin && message.channel.id !== config.public_bot_channel_id) {
+    message.reply(
+      "Please use the #bot-spam channel to issue bot commands - thanks!"
+    );
   }
 
   update_user_message_count(message.author.id, message);

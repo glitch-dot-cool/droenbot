@@ -1,3 +1,5 @@
+const { public_bot_channel_id } = require("../config.json");
+
 function get_restricted_channels(message) {
   // get all channels that have permissions overrides set (implies private)
   const restricted_channels = message.guild.channels.cache.filter(
@@ -9,10 +11,8 @@ function get_restricted_channels(message) {
     ([_, value]) => Number(value.id)
   );
 
-  const public_bot_spam_channel_id = "617838975335530507";
-
   // if the call is coming from the public bot channel, filter out private channels
-  if (message.channel.id === public_bot_spam_channel_id) {
+  if (message.channel.id === public_bot_channel_id) {
     return restricted_channels_array;
   }
 
