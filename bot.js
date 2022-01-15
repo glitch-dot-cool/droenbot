@@ -31,9 +31,13 @@ bot.on("message", (message) => {
     return;
   }
 
-  // warn if outside of public bot channel (if not a staff member)
+  // warn if issuing commands outside of public bot channel (if not a staff member)
   const isAdmin = role_check(bot, message);
-  if (!isAdmin && message.channel.id !== config.public_bot_channel_id) {
+  if (
+    !isAdmin &&
+    message.channel.id !== config.public_bot_channel_id &&
+    message.content.startsWith(config.prefix)
+  ) {
     message.reply(
       "Please use the #bot-spam channel to issue bot commands - thanks!"
     );
