@@ -1,7 +1,9 @@
 const Discord = require("discord.js");
 
 exports.run = async (bot, message, args) => {
-  const [command, role_name] = args.map((arg) => arg.toLowerCase());
+  const command = args[0].toLowerCase();
+  const role_name = args.slice(1).join(" ").toLowerCase();
+
   const valid_commands = ["add", "remove", "list", "view", "delete"];
   const restricted_roles = [
     "mod",
