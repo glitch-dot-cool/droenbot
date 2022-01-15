@@ -25,7 +25,7 @@ exports.run = async (bot, message, args) => {
         },
         {
           name: "Total Messages Sent:",
-          value: stats.total_messages,
+          value: stats.total_messages.toLocaleString(),
         },
         {
           name: "Media Types in Messages:",
@@ -45,11 +45,14 @@ function make_list(stats, category, label = "") {
   let result = "";
   if (Array.isArray(stats[category])) {
     stats[category].forEach((entry, idx) => {
-      result += `${idx + 1}. ${entry[0]}: ${entry[1]} ${label}\n`;
+      const category = entry[0];
+      const value = entry[1];
+      result += `${idx + 1}. ${category}: ${value.toLocaleString()} ${label}\n`;
     });
   } else {
     for (let key in stats[category]) {
-      result += `${key}: ${stats[category][key]}\n`;
+      const value = stats[category][key];
+      result += `${key}: ${value.toLocaleString()}\n`;
     }
   }
   return result;
