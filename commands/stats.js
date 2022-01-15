@@ -1,9 +1,12 @@
 const Discord = require("discord.js");
 const { get_user_message_count } = require("../db/user-model");
+const get_restricted_channels = require("../utils/get_restricted_channels");
 
 exports.run = async (bot, message, args) => {
+  const restricted_channels = get_restricted_channels(message);
   const { user, message_details } = await get_user_message_count(
-    message.author.id
+    message.author.id,
+    restricted_channels
   );
   const author_id = message.author.id;
   const guild_id = message.guild.id;

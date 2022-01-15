@@ -7,13 +7,19 @@ const {
   get_media_counts,
 } = require("../utils/user-model-utils");
 
-const get_user_message_count = async (id) => {
+const get_user_message_count = async (id, restricted_channels) => {
   try {
     const [user] = await db_model.findBy("users", { id });
+
     const message_details = await db_model.findBy("message_details", {
       user_fk: user.id,
     });
-    return { user, message_details };
+
+    const filtered_msg_details = message_details.filter(
+      (msg_detail) => !restricted_channels.includes(msg_detail.channel_id)
+    );
+
+    return { user, message_details: filtered_msg_details };
   } catch (error) {
     console.error(error);
   }
