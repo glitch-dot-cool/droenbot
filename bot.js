@@ -36,7 +36,8 @@ bot.on("message", (message) => {
   if (
     !isAdmin &&
     message.channel.id !== config.public_bot_channel_id &&
-    message.content.startsWith(config.prefix)
+    message.content.startsWith(config.prefix) &&
+    message.content !== config.prefix
   ) {
     message.reply(
       "Please use the #bot-spam channel to issue bot commands - thanks!"
