@@ -17,7 +17,9 @@ const bot = new Client({
     Intents.FLAGS.MESSAGE_CONTENT,
     Intents.FLAGS.GUILDS,
     Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.DIRECT_MESSAGES,
   ],
+  partials: ["CHANNEL"],
 });
 
 bot.login(config.token);
