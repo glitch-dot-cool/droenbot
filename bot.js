@@ -39,18 +39,7 @@ bot.on("messageCreate", (message) => {
     return;
   }
 
-  // warn if issuing commands outside of public bot channel (if not a staff member)
-  const isAdmin = role_check(bot, message);
-  if (
-    !isAdmin &&
-    message.channel.id !== config.public_bot_channel_id &&
-    message.content.startsWith(config.prefix) &&
-    message.content !== config.prefix
-  ) {
-    message.reply(
-      "Please use the #bot-spam channel to issue bot commands - thanks!"
-    );
-  }
+  warn_bot_channel(bot, message);
 
   update_user_message_count(message.author.id, message);
 
@@ -75,6 +64,24 @@ function command_handler(message) {
     console.error(error.red);
   }
 }
+
+const warn_bot_channel = (bot, message) => {
+  const is_dm = message.channel.type === "DM";
+  if (is_dm) return;
+
+  const is_admin = role_check(bot, message);
+  if (is_admin) return;
+
+  const has_command_prefix = message.content.startsWith(config.prefix);
+  const is_command =
+    has_command_prefix && message.content.substring(1, 2) !== config.prefix;
+
+  if (is_command && message.channel.id !== config.public_bot_channel_id) {
+    message.reply(
+      "Please use the #bot-spam channel to issue bot commands - thanks!"
+    );
+  }
+};
 
 /////////////////////////////////
 ////////  EXPRESS SERVER ////////
