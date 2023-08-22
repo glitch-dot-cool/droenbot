@@ -31,7 +31,7 @@ bot.on("debug", (err) => console.info(err.grey));
 bot.on("warn", (err) => console.warn(err.yellow));
 bot.on("error", (err) => console.error(err.red));
 
-bot.on("message", (message) => {
+bot.on("messageCreate", (message) => {
   // ignore messages posted by bots
   if (message.author.bot) {
     return;
