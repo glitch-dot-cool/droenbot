@@ -1,7 +1,7 @@
 // set the process title so it can be killed with `npm run stop`
 process.title = "droenbot";
 
-const Discord = require("discord.js");
+const { Client, Intents } = require("discord.js");
 const express = require("express");
 const colors = require("colors");
 
@@ -12,7 +12,13 @@ const webhook_router = require("./api/webhook-router");
 const invaders_router = require("./api/invaders-router");
 const role_check = require("./utils/role_check");
 
-const bot = new Discord.Client();
+const bot = new Client({
+  intents: [
+    Intents.FLAGS.MESSAGE_CONTENT,
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MESSAGES,
+  ],
+});
 
 bot.login(config.token);
 
