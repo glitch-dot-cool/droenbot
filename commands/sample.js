@@ -29,7 +29,7 @@ exports.run = async (bot, message, args) => {
         "Tip: you can combine flags and you can search by multiple tags"
       );
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
     return;
   }
 
@@ -55,7 +55,7 @@ exports.run = async (bot, message, args) => {
     )
     .setFooter("results from freesound.org");
 
-  message.channel.send(embed);
+  message.channel.send({ embeds: [embed] });
 };
 
 function make_url(args) {
