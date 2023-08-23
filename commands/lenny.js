@@ -19,7 +19,7 @@ exports.run = (bot, message, args) => {
   ];
 
   // can't delete msgs in dms
-  if (message.channel.type !== "dm") {
+  if (message.channel.type !== "DM") {
     message.delete();
   }
 

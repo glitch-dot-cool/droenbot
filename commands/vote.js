@@ -11,7 +11,7 @@ exports.run = async (bot, message, args) => {
     message.reply(
       "Sorry, you don't have sufficient permissions to participate in votes."
     );
-  } else if (message.channel.type !== "dm") {
+  } else if (message.channel.type !== "DM") {
     message.reply(
       `Votes must be cast privately - DM @droenbot with a vote like this: ${syntax}`
     );
