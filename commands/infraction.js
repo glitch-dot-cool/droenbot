@@ -56,7 +56,7 @@ async function view_infractions(args, message) {
       )
       .setFooter(`${user_infractions[0].infractions} total infraction(s)`);
 
-    message.channel.send(infraction_embed);
+    message.channel.send({ embeds: [infraction_embed] });
   } else {
     message.reply("This user has no infractions!");
   }

@@ -20,7 +20,7 @@ exports.run = async (bot, message, args) => {
       .addFields(link_to_text(title))
       .setFooter(`by ${author}`);
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
   } catch (error) {
     message.channel.send("oops, something went wrong");
   }

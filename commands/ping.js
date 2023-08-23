@@ -20,7 +20,7 @@ exports.run = (bot, message, args) => {
         })
       );
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
   } else {
     message.reply(
       "Sorry, you don't have sufficient permissions to use this command."

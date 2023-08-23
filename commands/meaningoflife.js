@@ -5,5 +5,5 @@ exports.run = (bot, message, args) => {
     "https://upload.wikimedia.org/wikipedia/commons/5/56/Answer_to_Life.png"
   );
 
-  message.reply(embed);
+  message.reply({ embeds: [embed] });
 };

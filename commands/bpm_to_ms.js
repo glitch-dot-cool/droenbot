@@ -28,7 +28,7 @@ exports.run = (bot, message, args) => {
       .setTitle("List of subdivisons:")
       .setDescription(list);
 
-    message.channel.send(list_embed);
+    message.channel.send({ embeds: [list_embed] });
   } else if (subdivisions[subdivision] === undefined) {
     message.reply(
       "Please provide a supported subdivision. Call `!bpm_to_ms list` to see a list of valid subdivisions."
@@ -39,6 +39,6 @@ exports.run = (bot, message, args) => {
       .setTitle(`A ${subdivision} note at ${bpm} equals:`)
       .setDescription(`${result}ms`);
 
-    message.channel.send(result_embed);
+    message.channel.send({ embeds: [result_embed] });
   }
 };
