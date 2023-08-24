@@ -34,5 +34,5 @@ exports.run = async (bot, message, args) => {
     )
     .setFooter(`observation time: ${observation_time} (local)`);
 
-  message.channel.send(embed);
+  message.channel.send({ embeds: [embed] });
 };
