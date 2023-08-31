@@ -1,7 +1,7 @@
 const db = require("../db/db-model");
 const Discord = require("discord.js");
 
-const typeToEmojiMap = {
+const type_to_emoji_map = {
   audio: "🔊",
   visual: "👁️",
   code: "💻",
@@ -92,8 +92,8 @@ async function list(message) {
 
     const embed = new Discord.MessageEmbed()
       .setTitle("List of Challenges:")
-      .setDescription(challenge_list);
-    message.channel.send(embed);
+      .setDescription(challenge_list.toString());
+    message.channel.send({ embeds: [embed] });
   } catch (error) {
     console.error(error);
   }
@@ -139,7 +139,7 @@ async function select(args, message) {
 
     // setup result embed
     const embed = new Discord.MessageEmbed()
-      .setTitle(`${typeToEmojiMap[type]} This month's ${type} challenge is:`)
+      .setTitle(`${type_to_emoji_map[type]} This month's ${type} challenge is:`)
       .addField(
         selected_challenge.challenge_name,
         selected_challenge.challenge_description || ""
@@ -148,7 +148,7 @@ async function select(args, message) {
         `Due date: ${new Date(due_by).toISOString().substring(0, 10)}`
       );
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
   } catch (error) {
     console.error(error);
     message.channel.send("Error selecting challenge");
@@ -183,7 +183,7 @@ function format_challenge_sublist(challenges, type) {
 
   // create initial string for reduce, omit if sublist has no entries
   const title = sublist.length
-    ? `**${typeToEmojiMap[type]} ${
+    ? `**${type_to_emoji_map[type]} ${
         type.charAt(0).toUpperCase() + type.slice(1)
       } Challenges**\n`
     : "";

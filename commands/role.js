@@ -12,9 +12,10 @@ exports.run = async (bot, message, args) => {
     "Server Booster",
     "internal-guest",
     "Trello",
-    "Taco",
+    "Taco", // trello bot
     "@everyone",
     "staff",
+    "Zapier", // zapier discord integration.
   ];
 
   // check for valid command
@@ -36,7 +37,7 @@ exports.run = async (bot, message, args) => {
       .setTitle("List of Roles:")
       .setDescription(list);
 
-    message.channel.send(list_embed);
+    message.channel.send({ embeds: [list_embed] });
   } else if (command === "remove" || command === "delete") {
     const role = message.guild.roles.cache.find(
       (role) => role.name === role_name
@@ -76,15 +77,22 @@ exports.run = async (bot, message, args) => {
 };
 
 async function get_role_list(message, restricted_roles) {
-  let list = "";
-  const roles = await message.guild.roles.fetch();
-  const filtered_roles = roles.cache.filter(
-    (role) =>
-      !restricted_roles.includes(role.name) && !role.name.includes("admin")
+  const role_objects = await message.guild.roles.fetch();
+
+  // convert es6 map to array - key, value pairs
+  const role_strings = [...role_objects].map(([k, v]) => v.name);
+
+  const filtered_roles = role_strings.filter(
+    (role_name) =>
+      // not in list of excluded roles and doesn't have 'admin' in name, ex. 'bandcamp-admin'
+      !restricted_roles.includes(role_name) && !role_name.includes("admin")
   );
 
-  filtered_roles.forEach((role) => (list += `${role.name}\n`));
-  return list;
+  const formatted_list = filtered_roles
+    .sort()
+    .reduce((acc, cur) => (acc += `${cur}\n`), "");
+
+  return formatted_list;
 }
 
 async function warn_invalid_role(message, restricted_roles) {
@@ -96,5 +104,5 @@ async function warn_invalid_role(message, restricted_roles) {
     .setTitle("List of Valid Roles:")
     .setDescription(list);
 
-  await message.channel.send(list_embed);
+  await message.channel.send({ embeds: [list_embed] });
 }

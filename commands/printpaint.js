@@ -9,5 +9,5 @@ exports.run = async (bot, message, args) => {
     .setImage(`https://paint.glitch.cool/thumbnail/${timestamp}`)
     .setFooter("Try it out at paint.glitch.cool");
 
-  message.channel.send(embed);
+  message.channel.send({ embeds: [embed] });
 };

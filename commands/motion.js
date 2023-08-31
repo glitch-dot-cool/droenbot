@@ -27,7 +27,7 @@ exports.run = async (bot, message, args) => {
         })
       );
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
   }
   // view a single motion
   else if (args[0] === "view") {
@@ -47,7 +47,7 @@ exports.run = async (bot, message, args) => {
       )
       .setFooter(`Vote Expiration: ${new Date(motion.expiry).toISOString()}`);
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
   } else {
     const [title, description, duration] = args.slice(0).join(" ").split("\n");
     // create a motion
@@ -80,7 +80,7 @@ exports.run = async (bot, message, args) => {
         .addField("Valid yea/nay commands", "yea, nay, y, n, yes, no")
         .setFooter(`Vote expires at ${expiry.toISOString()}`);
 
-      message.channel.send(vote_embed);
+      message.channel.send({ embeds: [vote_embed] });
     }
   }
 };

@@ -2,7 +2,13 @@ const Discord = require("discord.js");
 const yargs = require("yargs");
 const axios = require("axios");
 
+// todo seems like the API changed or we need a token or something, this command is currently inoperable
 exports.run = async (bot, message, args) => {
+  message.reply(
+    "This command is currently out of order. Bug @oddlogic if you want to use this and maybe he'll fix it."
+  );
+  return;
+
   const arguments = yargs.parse(args);
   let { _: query, $0: self, ...params } = arguments;
   query = query.join(" ");
@@ -27,7 +33,7 @@ exports.run = async (bot, message, args) => {
         "`!image birds --categories illustration`\n valid categories:\n`illustration`, `photograph`, or `digitized_artwork`"
       );
 
-    message.channel.send(info_embed);
+    message.channel.send({ embeds: [info_embed] });
     return;
   }
 
@@ -42,7 +48,7 @@ exports.run = async (bot, message, args) => {
   let url = `https://api.creativecommons.engineering/v1/images/?q=${encodeURI(
     query
   )}`;
-  
+
   // append filters to query string
   for (const key in params) {
     url = append_to_url(url, `${key}=${params[key]}`);

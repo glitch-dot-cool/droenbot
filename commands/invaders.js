@@ -22,7 +22,7 @@ exports.run = async (bot, message, args) => {
         })
       )
       .setFooter("play it at invaders.glitch.cool");
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
   } catch (error) {
     message.channel.send(
       "failed to fetch leaderboard data, cc: <@254686973766139904>"

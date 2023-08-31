@@ -33,7 +33,7 @@ exports.run = async (bot, message, args) => {
         }
       );
 
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
   } else {
     message.reply(
       "Sorry, you don't have sufficient privileges to use this command."

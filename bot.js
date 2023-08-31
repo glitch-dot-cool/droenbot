@@ -1,7 +1,7 @@
 // set the process title so it can be killed with `npm run stop`
 process.title = "droenbot";
 
-const Discord = require("discord.js");
+const { Client, Intents } = require("discord.js");
 const express = require("express");
 const colors = require("colors");
 
@@ -12,7 +12,15 @@ const webhook_router = require("./api/webhook-router");
 const invaders_router = require("./api/invaders-router");
 const role_check = require("./utils/role_check");
 
-const bot = new Discord.Client();
+const bot = new Client({
+  intents: [
+    Intents.FLAGS.MESSAGE_CONTENT,
+    Intents.FLAGS.GUILDS,
+    Intents.FLAGS.GUILD_MESSAGES,
+    Intents.FLAGS.DIRECT_MESSAGES,
+  ],
+  partials: ["CHANNEL"],
+});
 
 bot.login(config.token);
 
@@ -25,24 +33,13 @@ bot.on("debug", (err) => console.info(err.grey));
 bot.on("warn", (err) => console.warn(err.yellow));
 bot.on("error", (err) => console.error(err.red));
 
-bot.on("message", (message) => {
+bot.on("messageCreate", (message) => {
   // ignore messages posted by bots
   if (message.author.bot) {
     return;
   }
 
-  // warn if issuing commands outside of public bot channel (if not a staff member)
-  const isAdmin = role_check(bot, message);
-  if (
-    !isAdmin &&
-    message.channel.id !== config.public_bot_channel_id &&
-    message.content.startsWith(config.prefix) &&
-    message.content !== config.prefix
-  ) {
-    message.reply(
-      "Please use the #bot-spam channel to issue bot commands - thanks!"
-    );
-  }
+  warn_bot_channel(bot, message);
 
   update_user_message_count(message.author.id, message);
 
@@ -67,6 +64,24 @@ function command_handler(message) {
     console.error(error.red);
   }
 }
+
+const warn_bot_channel = (bot, message) => {
+  const is_dm = message.channel.type === "DM";
+  if (is_dm) return;
+
+  const is_admin = role_check(bot, message);
+  if (is_admin) return;
+
+  const has_command_prefix = message.content.startsWith(config.prefix);
+  const is_command =
+    has_command_prefix && message.content.substring(1, 2) !== config.prefix;
+
+  if (is_command && message.channel.id !== config.public_bot_channel_id) {
+    message.reply(
+      "Please use the #bot-spam channel to issue bot commands - thanks!"
+    );
+  }
+};
 
 /////////////////////////////////
 ////////  EXPRESS SERVER ////////

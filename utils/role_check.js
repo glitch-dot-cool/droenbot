@@ -3,7 +3,7 @@ const config = require("../config.json");
 function role_check(bot, message, role_name = "staff") {
   let is_member;
 
-  if (message.channel.type === "dm") {
+  if (message.channel.type === "DM") {
     const user_id = message.author.id;
     const guild = bot.guilds.cache.get(config.server_id);
     const role = guild.roles.cache.find((role) => role.name === role_name);

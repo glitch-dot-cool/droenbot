@@ -21,7 +21,7 @@ exports.run = async (bot, message, args) => {
         "Note: there are not that many VSTs, so obscure tags will likely not produce results"
       );
 
-    message.channel.send(info_embed);
+    message.channel.send({ embeds: [info_embed] });
     return;
   }
 
@@ -35,7 +35,7 @@ exports.run = async (bot, message, args) => {
         .addField("Valid Platforms:", "`windows`, `mac`, or `linux`")
         .addField("Syntax:", "`!vst --platform linux`");
 
-      message.channel.send(invalid_platform_embed);
+      message.channel.send({ embeds: [invalid_platform_embed] });
       return;
     }
 
@@ -76,7 +76,7 @@ exports.run = async (bot, message, args) => {
     .addField("Download:", `[download](${vst.downloadLinks[0]})`)
     .setFooter(`Developed by ${vst.developer}`);
 
-  message.channel.send(embed);
+  message.channel.send({ embeds: [embed] });
 };
 
 // utility for making comma-separated lists
