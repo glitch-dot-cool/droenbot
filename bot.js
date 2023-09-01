@@ -39,7 +39,9 @@ bot.on("messageCreate", (message) => {
     return;
   }
 
-  warn_bot_channel(bot, message);
+  const should_block_msg = warn_bot_channel(bot, message);
+
+  if (should_block_msg) return;
 
   update_user_message_count(message.author.id, message);
 
@@ -67,10 +69,12 @@ function command_handler(message) {
 
 const warn_bot_channel = (bot, message) => {
   const is_dm = message.channel.type === "DM";
-  if (is_dm) return;
+  if (is_dm) return false;
 
   const is_admin = role_check(bot, message);
-  if (is_admin) return;
+  if (is_admin) return false;
+
+  if (message.content === config.prefix) return false;
 
   const has_command_prefix = message.content.startsWith(config.prefix);
   const is_command =
@@ -80,6 +84,7 @@ const warn_bot_channel = (bot, message) => {
     message.reply(
       "Please use the #bot-spam channel to issue bot commands - thanks!"
     );
+    return true;
   }
 };
 
