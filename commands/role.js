@@ -15,7 +15,12 @@ exports.run = async (bot, message, args) => {
     "Taco", // trello bot
     "@everyone",
     "staff",
-    "Zapier", // zapier discord integration.
+    "Zapier", // zapier discord integration,
+    "label manager",
+    "Patreon Discord Bot"
+    "glitch benefactor", // patreon tier
+    "glitch patron", // patreon tier
+    "glitch philanthropist", // patreon tier
   ];
 
   // check for valid command
