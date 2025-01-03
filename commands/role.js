@@ -17,7 +17,7 @@ exports.run = async (bot, message, args) => {
     "staff",
     "Zapier", // zapier discord integration,
     "label manager",
-    "Patreon Discord Bot"
+    "Patreon Discord Bot",
     "glitch benefactor", // patreon tier
     "glitch patron", // patreon tier
     "glitch philanthropist", // patreon tier
