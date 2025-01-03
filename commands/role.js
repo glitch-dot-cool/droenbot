@@ -11,8 +11,6 @@ exports.run = async (bot, message, args) => {
     "x",
     "Server Booster",
     "internal-guest",
-    "Trello",
-    "Taco", // trello bot
     "@everyone",
     "staff",
     "Zapier", // zapier discord integration,
