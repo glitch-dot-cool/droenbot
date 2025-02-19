@@ -19,6 +19,7 @@ exports.run = async (bot, message, args) => {
     "glitch benefactor", // patreon tier
     "glitch patron", // patreon tier
     "glitch philanthropist", // patreon tier
+    "glitch-campers" // glitch.camp organization role
   ];
 
   // check for valid command
